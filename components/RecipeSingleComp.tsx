@@ -2,9 +2,12 @@ import React from 'react';
 import { StyleSheet, View, Image } from 'react-native';
 import { Avatar, Button, Card, Text } from 'react-native-paper';
 import { RecipeTypeID } from '@/types';
+import { FlatList } from 'react-native-gesture-handler';
 interface MyProps {
     recipe: RecipeTypeID
 }
+
+
 // const LeftContent = (myProps) => <Avatar.Icon {...MyProps} icon="food" />;
 
 export default function RecipeCardSingle({recipe}:MyProps) {
@@ -36,8 +39,9 @@ export default function RecipeCardSingle({recipe}:MyProps) {
         <Text variant="titleMedium" style={styles.sectionTitle}>
           Ingredients:
         </Text>
+        
         {recipe.ingredients.map((ingredientEntry, index) =>
-          ingredientEntry.ingredient ? (
+          ingredientEntry? (
             <Text key={index} style={styles.ingredient}>
               - {ingredientEntry.quantity}
               {ingredientEntry.ingredient.unit_id.abbreviation} of{' '}

@@ -11,7 +11,7 @@ export interface RecipeTypeID extends RecipeType {
   _id: string;
 }
 
-export interface IngredientType {
+export interface RecipeIngredientType {
     ingredient: {
       _id: string;
       name: string;
@@ -28,6 +28,18 @@ export interface IngredientType {
     };
     quantity: number;
   }
+  export interface IIngredientType{
+    _id:string,
+    name:string,
+    calories:number,
+    // need to populate and connect to the right one
+    unit_id:string
+    recpes:RecipeTypeID[]
+  }
+  export interface IngredientRecipe extends RecipeIngredientType {
+    ingredient: string; 
+    quantity: number; 
+  }
   export interface recipeCategoryType{
     _id: string;
     name: string;
@@ -38,4 +50,5 @@ export interface IAuthContext {
     session?:string | null;
     isLoading:boolean;
 }
+
 export type IResponseType = RecipeTypeID
