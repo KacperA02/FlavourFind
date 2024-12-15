@@ -1,4 +1,6 @@
 export interface RecipeType {
+  //had to add this for create to work. I think it adds any any to recipe property
+    recipe
     title:string;
     description:string;
     cooking_time:number;

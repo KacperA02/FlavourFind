@@ -14,6 +14,8 @@ export default function Page() {
     const [recCategory, setRecCategory] = useState<recipeCategoryType[]>([]);
     // array of ingredients from api
     const [ingredientList, setIngredientList] = useState<IIngredientType[]>([]);
+    // tracking
+    const [selectedIngredients, setSelectedIngredients] = useState<string[]>([]);
     // added a useState to hold selected ingredients
     const [selectedIngredient, setSelectedIngredient] = useState<string>("")
     const [quantity, setQuantity] = useState<number>(0);
@@ -82,44 +84,68 @@ export default function Page() {
     }
     // Created a handle for my m:n Ingredients
     const handleAddIngredient = () => {
-        // checking if theres any selected ingredient or quantity
-        if(selectedIngredient && quantity > 0) {
+        if (selectedIngredient && quantity > 0) {
             const ingredientConv = ingredientList.find(
-              (ingredient) => ingredient._id === selectedIngredient
+                (ingredient) => ingredient._id === selectedIngredient
             );
-            if(ingredientConv) {
+    
+            if (ingredientConv) {
                 const newIngredient = {
-                    ingredient: selectedIngredient,
-                    quantity
-                }
-                const updatedIngredients = [...form.ingredients];
-                updatedIngredients.push(newIngredient);
-                setForm({
-                    ...form,
-                    ingredients: updatedIngredients, 
-                  });
-                  console.log('Updated form:', form);
-                  setSelectedIngredient('');
-                  setQuantity(1);
-            }
-        }
-    }
-    const handleSubmit = () => {
-        console.log(form);
+                    ingredient: ingredientConv._id, 
+                    quantity: quantity,
+                };
 
-        postRequest('', form, {
+                setForm((prevForm) => ({
+                    ...prevForm,
+                    ingredients: [...prevForm.ingredients, newIngredient],
+                }));
+                console.log(form)
+                // to track the ingredients within the form to then filter the list
+                setSelectedIngredients(prev => [...prev, selectedIngredient]);
+                setQuantity(0); 
+                setSelectedIngredient('');
+            } else {
+                console.log("Ingredient not found!");
+            }
+        } else {
+            console.log("Please select an ingredient and enter a quantity.");
+        }
+    };
+    const handleSubmit = () => {
+        console.log("This is the form submitted",form);
+         // Creating FormData for multipart form submission
+         const formData = new FormData();
+
+         formData.append('title', form.title);
+         formData.append('description', form.description);
+         formData.append('cooking_time', form.cooking_time);
+         formData.append('instructions', form.instructions);
+         formData.append('category', form.category);
+ 
+         // Adding ingredients to FormData
+         form.ingredients.forEach((ingredient, index) => {
+             formData.append(`ingredients[${index}].ingredient`, ingredient.ingredient);
+             formData.append(`ingredients[${index}].quantity`, ingredient.quantity.toString());
+         });    
+        postRequest('https://recipe-backend-rose.vercel.app/api/recipes', formData, {
             headers: {
-                Authorization: `Bearer ${session}`
+                Authorization: `Bearer ${session}`,
+                // had to add it as a multi part because json ingredients werent working
+                'Content-Type': 'multipart/form-data'
             }
         }, (data) => {
-            router.push(`/recipes/${data._id}`);
+            console.log("data",data)
+            router.push(`/recipes/${data.recipe._id}`);
         });
 
     }
 
     if(loading === true) return  <ActivityIndicator animating={true} color={MD2Colors.red800} size='large'  />
     
- 
+    const filteredIngredientList = ingredientList.filter(
+        (ingredient) => !selectedIngredients.includes(ingredient._id)
+    );
+
     return (
         <>
             <Text>Title</Text>
@@ -170,9 +196,10 @@ export default function Page() {
                 style={styles.input}
                 onValueChange={(value: string) => setSelectedIngredient(value)}
             >
+                {/* mapped the by the filtered list then */}
                 <Picker.Item label="Select an ingredient" value="" />
-                {ingredientList.map((ingredient) => (
-                    <Picker.Item key={ingredient._id} label={ingredient.name} value={ingredient.name} />
+                {filteredIngredientList.map((ingredient) => (
+                    <Picker.Item key={ingredient._id} label={ingredient.name} value={ingredient._id} />
                 ))}
             </Picker>
 
@@ -181,13 +208,40 @@ export default function Page() {
                 style={styles.input}
                 keyboardType="numeric"
                 placeholder="quantity"
-                onChangeText={(value) => setQuantity(Number(value))}
+                value={quantity.toString()}
+                onChangeText={(value) => {
+                    const parsedValue = Number(value);
+                    // resetting the value if its not a valid number
+                    if (isNaN(parsedValue)) {
+                        setQuantity(0);
+                    } else {
+                        setQuantity(parsedValue);
+                    }
+                }}
             />
-
+            
             <Button title="Add Ingredient" onPress={handleAddIngredient} />
             <Text>Added Ingredients:</Text>
             {/* need to figure out how to show these. Maybe a filter ?? */}
-
+            {/* used flat list to show the ingredients already selected */}
+            {form.ingredients.length > 0 && (
+                 <FlatList
+                 data={form.ingredients}
+                 keyExtractor={(item, index) => index.toString()}
+                //  using extra data to get the ingredients list that we got before to match with the form.ingredient id to display the name
+                 extraData={ingredientList} 
+                 renderItem={({ item }) => {
+                    // .find function to find the corresponding id from form.ingredient to ingredientlist _ id
+                     const ingredient = ingredientList.find(ingredient => ingredient._id === item.ingredient);
+         
+                     return (
+                         <Text>
+                             {ingredient ? ingredient.name : 'Unknown Ingredient'} - Quantity: {item.quantity}
+                         </Text>
+                     );
+                }}
+                />
+            )}
             <Text>{error}</Text>
 
             <Button 
