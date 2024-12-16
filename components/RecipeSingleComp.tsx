@@ -2,10 +2,12 @@ import React from 'react';
 import { StyleSheet, View, Image } from 'react-native';
 import { Avatar, Button, Card, Text } from 'react-native-paper';
 import { RecipeTypeID } from '@/types';
+import { useRouter } from 'expo-router';
 import { FlatList } from 'react-native-gesture-handler';
 interface MyProps {
     recipe: RecipeTypeID
 }
+const router = useRouter();
 
 
 // const LeftContent = (myProps) => <Avatar.Icon {...MyProps} icon="food" />;
@@ -54,9 +56,10 @@ export default function RecipeCardSingle({recipe}:MyProps) {
 
       {/* Card Actions */}
       <Card.Actions>
-        <Button onPress={() => console.log(`Edit recipe: ${recipe._id}`)}>
-          View Details
-        </Button>
+      <Button
+        onPress={() => router.push(`/recipes/${recipe._id}/edit`)}>
+        Edit Details
+      </Button>
         <Button onPress={() => console.log(`Deleting recipe: ${recipe._id}`)}>
           Delete
         </Button>

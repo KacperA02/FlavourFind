@@ -6,7 +6,7 @@ export default function usePost(){
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState<boolean | null>(null);
     const [error, setError] = useState(null);
-
+    
     const putRequest = useCallback((url: string, formData: object, headers: object, onSuccess: <T extends IResponseType>(data:T) => void) => {
         setLoading(true);
 

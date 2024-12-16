@@ -34,6 +34,13 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="(auth)/recipes/[id]/edit"
+        options={{
+          title:'Recipe Edit',
+          href:null
+        }}
+      />
+      <Tabs.Screen
         name="(auth)/recipes/create"
         options={{
           title:'Recipe Create',
