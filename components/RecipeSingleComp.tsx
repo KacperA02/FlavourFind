@@ -3,16 +3,19 @@ import { StyleSheet, View, Image } from 'react-native';
 import { Avatar, Button, Card, Text } from 'react-native-paper';
 import { RecipeTypeID } from '@/types';
 import { useRouter } from 'expo-router';
+import { IUser } from '@/types';
+
+import { useSession } from '@/contexts/AuthContext';
 import { FlatList } from 'react-native-gesture-handler';
 interface MyProps {
     recipe: RecipeTypeID
+    user:IUser | null
 }
 const router = useRouter();
 
-
 // const LeftContent = (myProps) => <Avatar.Icon {...MyProps} icon="food" />;
 
-export default function RecipeCardSingle({recipe}:MyProps) {
+export default function RecipeCardSingle({recipe, user}:MyProps) {
   return (
     <Card style={styles.card}>
       {/* Card Header */}
@@ -55,15 +58,18 @@ export default function RecipeCardSingle({recipe}:MyProps) {
       </Card.Content>
 
       {/* Card Actions */}
-      <Card.Actions>
-      <Button
-        onPress={() => router.push(`/recipes/${recipe._id}/edit`)}>
-        Edit Details
-      </Button>
-        <Button onPress={() => console.log(`Deleting recipe: ${recipe._id}`)}>
-          Delete
+      {user && user._id === recipe.user ? (
+        <Card.Actions>
+        <Button
+          onPress={() => router.push(`/recipes/${recipe._id}/edit`)}>
+          Edit Details
         </Button>
-      </Card.Actions>
+          <Button onPress={() => console.log(`Deleting recipe: ${recipe._id}`)}>
+            Delete
+          </Button>
+        </Card.Actions>
+      ):("")}
+      
     </Card>
   );
 }

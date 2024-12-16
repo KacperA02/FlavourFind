@@ -7,7 +7,7 @@ import RecipeItem from '@/components/RecipeItem';
 import { RecipeTypeID } from '@/types';
 import { Link } from 'expo-router';
 export default function Tab() {
-  const { session, signOut } = useSession();
+  const { session, signOut, user } = useSession();
   const [favourite, setFavourite] = useState([]);
   const [myRecipes, setMyRecipes] = useState([]);
   useEffect(() => {
@@ -40,7 +40,7 @@ export default function Tab() {
   }, [session]);
   return (
     <View>
-
+      <Text>Welcome, {user?.first_name}</Text>
       {/* Show either the login form or logged-in content based on session */}
       {session ? (
         <View>

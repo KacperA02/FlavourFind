@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Text, TextInput, StyleSheet, Button, FlatList } from 'react-native';
+import { Text, TextInput, StyleSheet, Button, FlatList, View } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useSession } from '@/contexts/AuthContext';
 import useAPI from '@/hooks/useAPI';
@@ -8,6 +8,7 @@ import axios from 'axios';
 import { useLocalSearchParams } from 'expo-router';
 import { recipeCategoryType, IIngredientType, RecipeTypeID, IngredientRecipe } from '@/types';
 import { ActivityIndicator, MD2Colors } from 'react-native-paper';
+import { reload } from 'expo-router/build/global-state/routing';
 
 export default function Page() {
   const router = useRouter();
@@ -99,6 +100,22 @@ export default function Page() {
       setQuantity(0);
     }
   };
+  // added function to remove an ingredient from the list
+  const handleRemoveIngredient = (i:number) => {
+    setForm((prev) => {
+      const updateIngredients = [...prev.ingredients]
+      // used splice to remove the ingredient the corresponding button
+      updateIngredients.splice(i,1);
+      return {
+        ...prev,
+        ingredients:updateIngredients
+      }
+    })
+    // then filtered the selected ingredients to match the form so the ingredient doesnt disapear
+    setSelectedIngredients((prev) =>
+      prev.filter((ingredientId) => ingredientId !== form.ingredients[i].ingredient)
+    );
+  }
 
   // Submit Form
   const handleSubmit = () => {
@@ -115,10 +132,9 @@ export default function Page() {
     });
     console.log("Recipe ID:", id);
     // console.log("FormData content:");
-    formData.forEach((value, key) => console.log(`${key}: ${value}`));
+    // formData.forEach((value, key) => console.log(`${key}: ${value}`));
     
     putRequest(
-        
       `https://recipe-backend-rose.vercel.app/api/recipes/${id}`,
       formData,
       {
@@ -127,12 +143,16 @@ export default function Page() {
           'Content-Type': 'multipart/form-data',
         },
       },
-      (data) => router.push(`/recipes/${data.recipe._id}`)
+      
+      (response) => {
+        // i needed the data to be updated so put this in the params. Then within the dependencys in the show i checked if it was there and to match the updated at
+        router.replace(`/recipes/${response.data._id}?updated=${response.data.updatedAt}`
+        )}
     );
   };
 
   // Render Loading State
-  if (!oldRecipe || loading) {
+  if (!oldRecipe || loading === true) {
     return <ActivityIndicator animating color={MD2Colors.red800} size="large" />;
   }
 
@@ -182,7 +202,7 @@ export default function Page() {
         </Picker>
         <Text>Ingredient</Text>
         <Picker
-            selectedValue={form.category}
+            selectedValue={selectedIngredient}
             style={styles.input}
             onValueChange={(value: string) => setSelectedIngredient(value)}
         >
@@ -217,20 +237,29 @@ export default function Page() {
         {form.ingredients.length > 0 && (
              <FlatList
              data={form.ingredients}
-             keyExtractor={(item, index) => index.toString()}
+             keyExtractor={(index) => index.toString()}
             //  using extra data to get the ingredients list that we got before to match with the form.ingredient id to display the name
              extraData={ingredientList} 
-             renderItem={({ item }) => {
+             renderItem={({ item, index }) => {
                 // .find function to find the corresponding id from form.ingredient to ingredientlist _ id
                  const ingredient = ingredientList.find(ingredient => ingredient._id === item.ingredient);
      
                  return (
+                  // displaying the chosen ingredients
+                  <View>
                      <Text>
                          {ingredient ? ingredient.name : 'Unknown Ingredient'} - Quantity: {item.quantity}
                      </Text>
+                     <Button
+                     title="Remove"
+                     color="#FF0000"
+                     onPress={() => handleRemoveIngredient(index)}
+                   />
+                   </View>
                  );
             }}
             />
+            
         )}
         <Text>{error}</Text>
 
