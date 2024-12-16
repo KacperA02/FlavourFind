@@ -38,7 +38,25 @@ export default function usePost(){
                 setLoading(false);
              });
     }, []);
-
+    const deleteRequest = useCallback(
+      (url: string, config: { headers: object }, onSuccess: <T extends IResponseType>(data: T) => void) => {
+        setLoading(true);
+    
+        axios
+          .patch(url, {}, config)
+          .then((response) => {
+            setData(response.data);
+            onSuccess(response.data);
+          })
+          .catch((e) => {
+            setError(e.response?.data || "An error occurred");
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      },
+      []
+    );
 
     const getRequest = useCallback((url: string, headers: object, onSuccess: <T extends IResponseType>(data:T) => void) => {
       setLoading(true);
@@ -56,6 +74,6 @@ export default function usePost(){
            });
   }, []);
 
-    return { getRequest, putRequest, postRequest, data, loading, error};
+    return { getRequest, putRequest, postRequest, deleteRequest, data, loading, error};
 
 }

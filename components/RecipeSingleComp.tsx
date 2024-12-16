@@ -4,6 +4,7 @@ import { Avatar, Button, Card, Text } from 'react-native-paper';
 import { RecipeTypeID } from '@/types';
 import { useRouter } from 'expo-router';
 import { IUser } from '@/types';
+import DeleteButton from './DeleteBtn';
 
 import { useSession } from '@/contexts/AuthContext';
 import { FlatList } from 'react-native-gesture-handler';
@@ -13,6 +14,9 @@ interface MyProps {
 }
 const router = useRouter();
 
+const onDeleteSuccess = () => {
+  router.push('/recipes');
+};
 // const LeftContent = (myProps) => <Avatar.Icon {...MyProps} icon="food" />;
 
 export default function RecipeCardSingle({recipe, user}:MyProps) {
@@ -64,9 +68,11 @@ export default function RecipeCardSingle({recipe, user}:MyProps) {
           onPress={() => router.push(`/recipes/${recipe._id}/edit`)}>
           Edit Details
         </Button>
-          <Button onPress={() => console.log(`Deleting recipe: ${recipe._id}`)}>
-            Delete
-          </Button>
+        <DeleteButton
+            id={recipe._id}
+            resource="recipes"
+            onSuccess={onDeleteSuccess}
+          />
         </Card.Actions>
       ):("")}
       

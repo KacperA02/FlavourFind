@@ -9,6 +9,7 @@ export interface RecipeType {
     category:recipeCategoryType;
     user:string;
     image?:string;
+    isDeleted:boolean;
     ingredients: IngredientType[];
 }
 export interface RecipeTypeID extends RecipeType {

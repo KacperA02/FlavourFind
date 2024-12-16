@@ -21,7 +21,7 @@ export default function RecipeItem({ recipe }: MyProps) {
           <Title style={styles.title}>{recipe.title}</Title>
         </Link>
         {/* Adding Category and Cooking Time */}
-        <Paragraph style={styles.category}>Category: {recipe.category?.name}</Paragraph>
+        <Paragraph style={styles.category}>Category: {recipe?.category?.name}</Paragraph>
         <Paragraph style={styles.cookingTime}>Cooking Time: {recipe.cooking_time} mins</Paragraph>
       </Card.Content>
     </Card>

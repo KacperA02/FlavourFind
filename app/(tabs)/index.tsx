@@ -6,10 +6,12 @@ import axios from 'axios';
 import RecipeItem from '@/components/RecipeItem';
 import { RecipeTypeID } from '@/types';
 import { Link } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 export default function Tab() {
   const { session, signOut, user } = useSession();
   const [favourite, setFavourite] = useState([]);
   const [myRecipes, setMyRecipes] = useState([]);
+  const {deleted,updated} = useLocalSearchParams();
   useEffect(() => {
     if (session) {
      
@@ -30,14 +32,15 @@ export default function Tab() {
           headers: { Authorization: `Bearer ${session}` }
         })
         .then((response) => {
+          const filteredRecipe = response.data.recipes.filter((recipe: RecipeTypeID) => recipe.isDeleted === false);
           console.log(response.data.recipes)
-          setMyRecipes(response.data.recipes); 
+          setMyRecipes(filteredRecipe); 
         })
         .catch((error) => {
           console.error('Error fetching recipes', error);
         });
     }
-  }, [session]);
+  }, [session,deleted,updated]);
   return (
     <View>
       <Text>Welcome, {user?.first_name}</Text>

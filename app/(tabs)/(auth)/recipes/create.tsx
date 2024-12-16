@@ -65,7 +65,6 @@ export default function Page() {
         );
     }
     const { postRequest, data, loading, error } = useAPI();
-    // handles each add to the ingredients array
     
 
     // handles any changes to fields

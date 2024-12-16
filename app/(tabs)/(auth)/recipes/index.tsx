@@ -7,28 +7,30 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { Button, Snackbar } from 'react-native-paper'; 
 import RecipeItem from '@/components/RecipeItem';
 import { RecipeTypeID } from '@/types';
-
+import { useLocalSearchParams } from 'expo-router';
 export default function Tab() {
   const devUrl = process.env.EXPO_PUBLIC_DEV_URL;
   const [recipes, setRecipes] = useState([]);
   // using snack bar to display any error messages
   const [snackBarVisible, setSnackBarVisible] = useState(false); 
   const [snackBarMessage, setSnackBarMessage] = useState('');
-
+  const {deleted,updated} = useLocalSearchParams();
 //  getting the recipes
   useEffect(() => {
     axios
       .get('https://recipe-backend-rose.vercel.app/api/recipes')
       .then((response) => {
+        // filtering recipes to find ones that aren't deleted
+        const filteredRecipe = response.data.filter((recipe: RecipeTypeID) => recipe.isDeleted === false);
         console.log(response.data);
-        setRecipes(response.data);
+        setRecipes(filteredRecipe);
       })
       .catch((err) => {
         console.log(err);
         setSnackBarMessage('Failed to load recipes');
         setSnackBarVisible(true);
       });
-  }, []);
+  }, [updated,deleted]);
 
   if (!recipes) return <Text>No recipes found</Text>;
 
