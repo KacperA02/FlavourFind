@@ -1,8 +1,9 @@
-import { Text, TextInput, StyleSheet, Button } from 'react-native';
+import { Text, TextInput, StyleSheet, Button, Modal,TouchableOpacity,View} from 'react-native';
 import { useState } from 'react';
 import axios from 'axios';
 import { useSession } from '@/contexts/AuthContext';
 import { IAuthContext } from '@/types';
+import RegisterForm from "@/components/RegisterForm";
 
 export default function LoginForm() {
     const [form, setForm] = useState({
@@ -10,9 +11,8 @@ export default function LoginForm() {
         password: ""
     });
     const [error, setError] = useState("");
-
     const { signIn } = useSession() as IAuthContext;
-
+    const [isRegisterVisible, setRegisterVisible] = useState(false)
     const handleChange = (field: string, value:string) => {
         setForm(prevState => ({
             ...prevState,
@@ -24,7 +24,8 @@ export default function LoginForm() {
         console.log("Clicked");
 
         axios.post('https://recipe-backend-rose.vercel.app/api/users/login', {
-            email: form.email,
+            // trim function removes whitespaces
+            email: form.email.trim(),
             password: form.password
         })
              .then(response => {
@@ -38,7 +39,7 @@ export default function LoginForm() {
     };
 
     return (
-        <>
+        <View>
             <TextInput
                 style={styles.input}
                 placeholder='Email'
@@ -51,6 +52,8 @@ export default function LoginForm() {
                 placeholder='Password'
                 value={form.password}
                 onChangeText={(value)=> handleChange("password",value)}
+                // secures the password to not be show on the screen
+                secureTextEntry
             />
 
             <Text>{error}</Text>
@@ -60,7 +63,35 @@ export default function LoginForm() {
                 title="Submit"
                 color="#841584"
             />
-        </>
+            <Text>
+        Not registered yet?{" "}
+        <Text
+          onPress={() => setRegisterVisible(true)} // Open modal
+        >
+          Sign up now for free
+        </Text>
+      </Text>
+
+      {/* Modal for RegisterForm */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isRegisterVisible}
+        onRequestClose={() => setRegisterVisible(false)} 
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <TouchableOpacity
+              
+              onPress={() => setRegisterVisible(false)} 
+            >
+              <Text>X</Text>
+            </TouchableOpacity>
+            <RegisterForm onClose={() => setRegisterVisible(false)} />
+          </View>
+        </View>
+      </Modal>
+    </View>
     );   
 }
 
@@ -70,5 +101,16 @@ const styles = StyleSheet.create({
         margin: 10,
         borderWidth: 1,
         padding: 10
-    }
+    },
+    modalContainer: {
+        flex: 1,
+        justifyContent: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+      },
+      modalContent: {
+        margin: 20,
+        padding: 20,
+        backgroundColor: "white",
+        borderRadius: 10,
+      }
 });

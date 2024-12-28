@@ -2,7 +2,7 @@ import { Button } from 'react-native';
 import useAPI from '@/hooks/useAPI';
 import { useSession } from '@/contexts/AuthContext';
 import { useRouter } from 'expo-router';
-const DeleteButton = ({ id, resource, onSuccess }: { id: string, resource: string, onSuccess: () => void }) => {
+const DeleteButton = ({ id, resource}: { id: string, resource: string}) => {
 const router = useRouter();
   const { deleteRequest, loading, error } = useAPI();
   const { session } = useSession(); 

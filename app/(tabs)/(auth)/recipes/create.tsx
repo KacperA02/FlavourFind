@@ -153,6 +153,7 @@ export default function Page() {
                 placeholder='Recipes Title'
                 value={form.title}
                 onChangeText={(value)=> handleChange("title",value)}
+                 autoCapitalize="words"
             />
 
             <Text>Description</Text>

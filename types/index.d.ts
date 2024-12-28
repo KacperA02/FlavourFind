@@ -56,8 +56,9 @@ export interface IUser {
   _id: string;
   first_name: string;
   last_name:string
-  roles: string[]; 
+  roles: [{name:string}]; 
 }
+
 export interface IAuthContext {
     signIn: (token:string) => void;
     signOut: () => void;

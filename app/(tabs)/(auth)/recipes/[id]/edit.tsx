@@ -8,7 +8,7 @@ import axios from 'axios';
 import { useLocalSearchParams } from 'expo-router';
 import { recipeCategoryType, IIngredientType, RecipeTypeID, IngredientRecipe } from '@/types';
 import { ActivityIndicator, MD2Colors } from 'react-native-paper';
-import { reload } from 'expo-router/build/global-state/routing';
+// import { reload } from 'expo-router/build/global-state/routing';
 
 export default function Page() {
   const router = useRouter();

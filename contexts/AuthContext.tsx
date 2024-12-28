@@ -25,6 +25,7 @@ export function SessionProvider(props: PropsWithChildren){
     // only need to do it for storage state as it is how it comes back
     const [[isLoading, session],setSession] = useStorageState('session');
     const [user, setUser] = useState<IUser | null>(null);
+    // I wanted to set isAdmin here and reuse it whereever i needed it but it could be secuity risk as anyone could just change the boolean. Instead im gonna write the line of code whenever i need it 
     // checking if session exists for storing users data
     useEffect(()=> {
         if(session) {
