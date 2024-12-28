@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Text, TextInput, StyleSheet, Button, FlatList} from 'react-native';
+import { Text, TextInput, StyleSheet, Button, FlatList, View} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useSession } from '@/contexts/AuthContext';
 import useAPI from '@/hooks/useAPI'
@@ -140,13 +140,13 @@ export default function Page() {
     }
 
     if(loading === true) return  <ActivityIndicator animating={true} color={MD2Colors.red800} size='large'  />
-    
+    const currentIngredient = ingredientList.find((ingredient) => ingredient._id === selectedIngredient);
     const filteredIngredientList = ingredientList.filter(
         (ingredient) => !selectedIngredients.includes(ingredient._id)
     );
 
     return (
-        <>
+        <View>
             <Text>Title</Text>
             <TextInput
                 style={styles.input}
@@ -202,7 +202,6 @@ export default function Page() {
                     <Picker.Item key={ingredient._id} label={ingredient.name} value={ingredient._id} />
                 ))}
             </Picker>
-
             <Text>Quantity</Text>
             <TextInput
                 style={styles.input}
@@ -219,6 +218,16 @@ export default function Page() {
                     }
                 }}
             />
+            {selectedIngredient && (
+            // Display the ingredient unit name (if available)
+            currentIngredient ? (
+                <Text>
+                    Selected Ingredient Quantity Unit: {currentIngredient.unit_id?.name}
+                </Text>
+            ) : (
+                <Text>No ingredient selected</Text>
+            )
+            )}
             
             <Button title="Add Ingredient" onPress={handleAddIngredient} />
             <Text>Added Ingredients:</Text>
@@ -236,7 +245,8 @@ export default function Page() {
          
                      return (
                          <Text>
-                             {ingredient ? ingredient.name : 'Unknown Ingredient'} - Quantity: {item.quantity}
+                             {ingredient ? ingredient.name : 'Unknown Ingredient'} - Quantity: {item.quantity}{ingredient && ingredient.unit_id?.name ? ` ${ingredient.unit_id.name}s` : ''} |   
+                             {ingredient && ingredient.calories ? ` ${ingredient.calories} calories` : ''}
                          </Text>
                      );
                 }}
@@ -249,7 +259,7 @@ export default function Page() {
                 title="Submit"
                 color="#841584"
             />
-        </>
+        </View>
     );
 }
 

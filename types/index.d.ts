@@ -41,7 +41,7 @@ export interface RecipeIngredientType {
     name:string,
     calories:number,
     // need to populate and connect to the right one
-    unit_id:string
+    unit_id: { name: string };
     recpes:RecipeTypeID[]
   }
   export interface IngredientRecipe extends RecipeIngredientType {
