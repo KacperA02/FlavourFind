@@ -9,24 +9,11 @@ import { Link } from "expo-router";
 import { useLocalSearchParams } from "expo-router";
 export default function Tab() {
 	const { session, signOut, user } = useSession();
-	const [favourite, setFavourite] = useState([]);
 	const [myRecipes, setMyRecipes] = useState([]);
 	const { deleted, updated } = useLocalSearchParams();
-	const isAdmin = (user?.roles?.some(role => role.name === 'admin'))
+
 	useEffect(() => {
 		if (session) {
-			axios
-				.get("https://recipe-backend-rose.vercel.app/api/users/favourites", {
-					headers: { Authorization: `Bearer ${session}` },
-				})
-				.then((response) => {
-					console.log(response.data.favourites);
-					setFavourite(response.data.favourites);
-				})
-				.catch((error) => {
-					console.error("Error fetching user data", error);
-				});
-
 			axios
 				.get("https://recipe-backend-rose.vercel.app/api/users/myRecipes", {
 					headers: { Authorization: `Bearer ${session}` },
@@ -45,39 +32,15 @@ export default function Tab() {
 	}, [session, deleted, updated]);
 	
 	return (
-		<View>
-			{isAdmin ? (
-				<Button title="Register Admin" color="green" />
-			):("")}
+		
+    <View>
+		
 			{/* Show either the login form or logged-in content based on session */}
 			{session ? (
-				
 				<View>
 					<Text>Welcome, {user?.first_name}</Text>
 					{/* Display the logout button when logged in */}
 					<Button onPress={signOut} title="Logout" color="#841584" />
-					{/* displaying */}
-					<View>
-						{/* Favourites Section */}
-						<View>
-							<Text>Favourites</Text>
-							{favourite.length === 0 ? (
-								<Link href={{ pathname: "/recipes" }}>
-									<Button
-										title="Check out some Recipes!"
-										onPress={() => {}}
-										color="#007BFF"
-									/>
-								</Link>
-							) : (
-								<FlatList
-									data={favourite}
-									renderItem={({ item }) => <RecipeItem recipe={item} />}
-									keyExtractor={(recipe: RecipeTypeID) => recipe._id}
-								/>
-							)}
-						</View>
-
 						{/* My Recipes Section */}
 						<View>
 							<Text>My Recipes</Text>
@@ -88,7 +51,6 @@ export default function Tab() {
 							/>
 						</View>
 					</View>
-				</View>
 			) : (
 				<LoginForm />
 			)}

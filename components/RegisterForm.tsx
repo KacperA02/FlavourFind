@@ -49,6 +49,7 @@ export default function RegisterForm({ onClose }: RegisterFormProps) {
 
   return (
     <View>
+      <Text>Register Page</Text>
       <TextInput
         style={styles.input}
         placeholder="First Name"
