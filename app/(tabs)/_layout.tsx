@@ -2,9 +2,10 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Tabs } from 'expo-router';
 import { useSession } from '@/contexts/AuthContext';
 import LoginForm from '@/components/LoginForm';
+import { useLocalSearchParams } from 'expo-router'; 
 export default function TabLayout() {
   const { session, user } = useSession();
-
+  const { section } = useLocalSearchParams();
   // redirects to login page if user isn't logged in
   if (!session) {
     return <LoginForm />;
@@ -26,14 +27,6 @@ export default function TabLayout() {
         options={{
           title: 'Recipes',
           tabBarIcon: ({ color }) => <FontAwesome size={28} name="book" color={color} />,
-
-        }}
-      />
-      <Tabs.Screen
-        name="(auth)/ingredients/index"
-        options={{
-          title: 'Ingredients',
-          tabBarIcon: ({ color }) => <FontAwesome size={28} name="leaf" color={color} />,
 
         }}
       />
@@ -75,9 +68,27 @@ export default function TabLayout() {
           }}
         />
       )}
+       {isAdmin && (
+        <Tabs.Screen
+          name="(admin)/[section]"  
+          options={{
+            title:`Admin ${section} Page`,
+            href:null
+          }}
+        />
+      )}
        {!isAdmin && (
         <Tabs.Screen
           name="(admin)/index"  
+          options={{
+            title:'Admin Panel',
+            href:null
+          }}
+        />
+      )}
+       {!isAdmin && (
+        <Tabs.Screen
+          name="(admin)/[section]"  
           options={{
             title:'Admin Panel',
             href:null
