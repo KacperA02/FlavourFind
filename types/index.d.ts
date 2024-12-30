@@ -18,6 +18,7 @@ export interface RecipeTypeID extends RecipeType {
 export interface ApiResponse<T> {
   message: string;
   data: T;
+  users:[];
 }
 export interface RecipeIngredientType {
     ingredient: {
@@ -58,6 +59,8 @@ export interface IUser {
   last_name:string
   firstName:string;
   lastName:string;
+  email: string;
+  recipes: RecipeTypeID[];
   users:IUser[];
   roles: [{name:string}]; 
 }
