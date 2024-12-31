@@ -11,7 +11,7 @@ export default function TabLayout() {
     return <LoginForm />;
   }
   const isAdmin = (user?.roles?.some(role => role.name === 'admin'))
- 
+  
   return (
     <Tabs screenOptions={{ tabBarActiveTintColor: 'blue' }}>
 {/* recipe tabs */}
@@ -68,7 +68,7 @@ export default function TabLayout() {
           }}
         />
       )}
-       {isAdmin && (
+       {isAdmin && section && (
         <Tabs.Screen
           name="(admin)/[section]"  
           options={{

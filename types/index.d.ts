@@ -10,7 +10,7 @@ export interface RecipeType {
     user:string;
     image?:string;
     isDeleted:boolean;
-    ingredients: IngredientType[];
+    ingredients: RecipeIngredientType[];
 }
 export interface RecipeTypeID extends RecipeType {
   _id: string;

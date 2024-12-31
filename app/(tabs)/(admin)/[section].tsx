@@ -2,10 +2,17 @@ import { View, Text, StyleSheet } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import ManageIngredients from "@/section-comps/ManageIngredients";
 import ManageUsers from "../../../section-comps/ManageUsers";
-
+import { useEffect, useState } from "react";
 export default function AdminSection() {
     const { section } = useLocalSearchParams();
-    
+    const [currentSection, setCurrentSection] = useState(section);
+
+  // Update the current section when the `section` changes
+  useEffect(() => {
+    if (section !== currentSection) {
+      setCurrentSection(section);
+    }
+  }, [section, currentSection]);
 
   const renderSectionContent = () => {
     switch (section) {

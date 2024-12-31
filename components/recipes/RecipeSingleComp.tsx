@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, Image } from "react-native";
+import { StyleSheet, View, Image, Alert } from "react-native";
 import { Avatar, Button, Card, Text } from "react-native-paper";
 import { RecipeTypeID } from "@/types";
 import { useRouter } from "expo-router";
@@ -13,6 +13,9 @@ interface MyProps {
 	user: IUser | null;
 }
 const router = useRouter();
+const onDeleteRecSuccess = () => {
+    alert(`Recipe Deleted Successfully`);
+  };
 
 // const LeftContent = (myProps) => <Avatar.Icon {...MyProps} icon="food" />;
 
@@ -66,7 +69,7 @@ export default function RecipeCardSingle({ recipe, user }: MyProps) {
 					<Button onPress={() => router.push(`/recipes/${recipe._id}/edit`)}>
 						Edit Details
 					</Button>
-					<DeleteButton id={recipe._id} resource="recipes" />
+					<DeleteButton id={recipe._id} resource="recipes" onDeleteSuccess={onDeleteRecSuccess} />
 				</Card.Actions>
 			) : (
 				""

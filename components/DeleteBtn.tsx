@@ -2,7 +2,7 @@ import { Button } from 'react-native';
 import useAPI from '@/hooks/useAPI';
 import { useSession } from '@/contexts/AuthContext';
 import { useRouter } from 'expo-router';
-const DeleteButton = ({ id, resource}: { id: string, resource: string}) => {
+const DeleteButton = ({ id, resource,onDeleteSuccess}: { id: string, resource: string, onDeleteSuccess: () => void;}) => {
 const router = useRouter();
   const { deleteRequest, loading, error } = useAPI();
   const { session } = useSession(); 
@@ -22,6 +22,7 @@ const router = useRouter();
       { headers: { Authorization: `Bearer ${session}` } },
       (data) => {
         console.log("Deleted successfully", data);
+        onDeleteSuccess();
         router.replace(`/?deleted=${id}`);
       }
     );

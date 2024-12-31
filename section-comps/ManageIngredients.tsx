@@ -1,10 +1,10 @@
-import { View, Text, StyleSheet, FlatList, Button, Modal, Pressable } from "react-native";
+import { View, Text, StyleSheet, FlatList, Button, Modal, Pressable, Alert } from "react-native";
 import { useState, useEffect } from "react";
 import { useSession } from "@/contexts/AuthContext";  
 import useAPI from "@/hooks/useAPI"; 
 import { ActivityIndicator, MD2Colors } from "react-native-paper";  
 import { IngredientType } from "@/types";
-
+import DeleteButton from "@/components/DeleteBtn";
 export default function ManageIngredients() {
   const [ingredients, setIngredients] = useState<IngredientType[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -59,6 +59,10 @@ export default function ManageIngredients() {
     setSelectedIngredient(null);
     setIngredientDetails(null);
   }
+  const onDeleteIngSuccess = () => {
+    closeModal();
+    alert('Ingredient deleted successfully!');
+  };
   // statements to check if something isn't working
   if (loading) {
     return <ActivityIndicator animating={true} color={MD2Colors.red800} size="large" />;
@@ -81,8 +85,8 @@ export default function ManageIngredients() {
         data={ingredients}
         keyExtractor={(item) => item._id.toString()}
         renderItem={({ item }) => (
-          <View style={styles.ingredientCard}>
-            <Text style={styles.name}>{item.name}</Text>
+          <View>
+            <Text>{item.name}</Text>
             <Button title="View Ingredient Details" onPress={() => openIngredientDetails(item)} />
           </View>
         )}
@@ -116,6 +120,10 @@ export default function ManageIngredients() {
                     new Date(ingredientDetails.updatedAt).toLocaleString() : 
                     ingredientDetails?.updatedAt}
                 </Text>
+                {/* <Button onPress={() => router.push(`/recipes/${recipe._id}/edit`)}>
+						    Edit Details
+					      </Button> */}
+                <DeleteButton id={ingredientDetails?._id || ''} resource="ingredients" onDeleteSuccess={onDeleteIngSuccess} />
                 <Text style={styles.totalRecipe}>Total Recipes : {ingredientDetails?.recipes?.length}</Text>
                 {ingredientDetails?.recipes?.length ? (
                 ingredientDetails.recipes.map((recipe, index) => (
