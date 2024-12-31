@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet } from "react-native";
 import { useLocalSearchParams } from "expo-router";
-// import ManageRecipes from "./sections/ManageRecipes";
+import ManageIngredients from "@/section-comps/ManageIngredients";
 import ManageUsers from "../../../section-comps/ManageUsers";
 
 export default function AdminSection() {
@@ -9,8 +9,8 @@ export default function AdminSection() {
 
   const renderSectionContent = () => {
     switch (section) {
-      case "recipes":
-        // return <ManageRecipes />;
+      case "ingredients":
+        return <ManageIngredients />;
       case "users":
         return <ManageUsers />;
       default:

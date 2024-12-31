@@ -64,7 +64,24 @@ export interface IUser {
   users:IUser[];
   roles: [{name:string}]; 
 }
-
+export interface IngredientType {
+  _id: string;
+  name: string;
+  calories: number;
+  category_id: {
+    _id: string;
+    name: string;
+  };
+  unit_id: {
+    _id: string;
+    name: string;
+    abbreviation: string;
+  };
+  recipes:[];
+  isDeleted:boolean;
+  createdAt:string;
+  updatedAt:string;
+}
 export interface IAuthContext {
     signIn: (token:string) => void;
     signOut: () => void;

@@ -15,7 +15,7 @@ export default function AdminIndex() {
     <View style={styles.container}>
       <Text style={styles.title}>Welcome to the Admin Dashboard</Text>
       <Button title="Manage Users" onPress={() => router.push("/users")} />
-      <Button title="Manage Recipes" onPress={() => router.push("/admin")} />
+      <Button title="Manage Ingredients" onPress={() => router.push("/ingredients")} />
       
     </View>
   );
