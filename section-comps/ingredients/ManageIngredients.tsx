@@ -1,20 +1,22 @@
-import { View, Text, StyleSheet, FlatList, Button, Modal, Pressable, Alert } from "react-native";
+import { View, Text, StyleSheet, FlatList, Button, Modal, Pressable } from "react-native";
 import { useState, useEffect } from "react";
 import { useSession } from "@/contexts/AuthContext";  
 import useAPI from "@/hooks/useAPI"; 
+import { useRouter } from "expo-router";
 import { ActivityIndicator, MD2Colors } from "react-native-paper";  
 import { IngredientType } from "@/types";
 import DeleteButton from "@/components/DeleteBtn";
+import { useLocalSearchParams } from "expo-router";
 export default function ManageIngredients() {
+  const { deleted ,updated } = useLocalSearchParams();
   const [ingredients, setIngredients] = useState<IngredientType[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedIngredient, setSelectedIngredient] = useState<IngredientType | null>(null);
   const [ingredientDetails, setIngredientDetails] = useState<IngredientType | null>(null);
   const [ingredientDetailsLoading, setIngredientDetailsLoading] = useState(false);
-  const { session } = useSession();  
+  const { session } = useSession();
+  const router = useRouter();  
   const { getRequest, loading, error } = useAPI(); 
-
-
   useEffect(() => {
     if (!session) {
       console.log("No session token available.");
@@ -33,7 +35,7 @@ export default function ManageIngredients() {
         setIngredients(response);  
       }
     );
-  }, [session, getRequest]);  
+  }, [session, getRequest, deleted, updated]);  
 
   // User details modal
   const openIngredientDetails = (ingredient: IngredientType) => {
@@ -120,9 +122,11 @@ export default function ManageIngredients() {
                     new Date(ingredientDetails.updatedAt).toLocaleString() : 
                     ingredientDetails?.updatedAt}
                 </Text>
-                {/* <Button onPress={() => router.push(`/recipes/${recipe._id}/edit`)}>
-						    Edit Details
-					      </Button> */}
+                <Button
+                title="Edit Details"
+                onPress={() => router.push(`/ingredients/edit?id=${ingredientDetails?._id}`)}
+                />
+
                 <DeleteButton id={ingredientDetails?._id || ''} resource="ingredients" onDeleteSuccess={onDeleteIngSuccess} />
                 <Text style={styles.totalRecipe}>Total Recipes : {ingredientDetails?.recipes?.length}</Text>
                 {ingredientDetails?.recipes?.length ? (

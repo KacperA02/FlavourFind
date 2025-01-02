@@ -58,7 +58,7 @@ export default function usePost(){
       []
     );
 
-    const getRequest = useCallback((url: string, headers: object, onSuccess: <T extends IResponseType>(data:T) => void) => {
+    const getRequest = useCallback((url: string, headers: object, onSuccess: <T extends IResponseType>(response:T) => void) => {
       setLoading(true);
 
       axios.get(url, headers)

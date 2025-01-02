@@ -82,6 +82,18 @@ export interface IngredientType {
   createdAt:string;
   updatedAt:string;
 }
+export interface IUnitType {
+  response
+  _id: string;
+  name: string;
+  abbreviation: string;
+  isDeleted: boolean;
+}
+export interface ICategoryIngredientType {
+  _id: string;
+  name: string;
+  isDeleted: boolean;
+}
 export interface IAuthContext {
     signIn: (token:string) => void;
     signOut: () => void;

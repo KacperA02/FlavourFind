@@ -68,12 +68,29 @@ export default function TabLayout() {
           }}
         />
       )}
-       {isAdmin && section && (
+       {isAdmin && (
         <Tabs.Screen
           name="(admin)/[section]"  
           options={{
             title:`Admin ${section} Page`,
             href:null
+          }}
+        />
+      )}
+       {isAdmin ? (
+        <Tabs.Screen
+          name="(admin)/ingredients/edit"
+          options={{
+            title: 'Ingredient Edit',
+            href: null,
+          }}
+        />
+      ) : (
+        <Tabs.Screen
+          name="(admin)/ingredients/edit"
+          options={{
+            title: 'Ingredient Edit',
+            href: null,
           }}
         />
       )}
