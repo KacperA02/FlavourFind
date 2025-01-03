@@ -7,7 +7,7 @@ export default function usePost(){
     const [loading, setLoading] = useState<boolean | null>(null);
     const [error, setError] = useState(null);
     
-    const putRequest = useCallback((url: string, formData: object, headers: object, onSuccess: <T extends IResponseType>(data:T) => void) => {
+    const putRequest = useCallback((url: string, formData: object, headers: object, onSuccess: <T extends IResponseType>(response:T) => void) => {
         setLoading(true);
 
         axios.put(url, formData, headers)

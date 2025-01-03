@@ -157,7 +157,7 @@ export default function Page() {
   }
 
   return (
-    <>
+    <View>
         <Text>Title</Text>
         <TextInput
             style={styles.input}
@@ -268,7 +268,7 @@ export default function Page() {
             title="Submit"
             color="#841584"
         />
-    </>
+    </View>
     );
 }
 

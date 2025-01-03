@@ -1,71 +1,47 @@
 import { useState, useEffect } from 'react';
 import { Text, TextInput, StyleSheet, Button, View } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { useRouter } from 'expo-router';
-import { useLocalSearchParams } from 'expo-router';
 import { useSession } from '@/contexts/AuthContext';
 import useAPI from '@/hooks/useAPI';
 import { IngredientType, IUnitType,ICategoryIngredientType } from '@/types';
 import { ActivityIndicator, MD2Colors } from 'react-native-paper';
 
-export default function EditIngredient() {
-  const router = useRouter();
-  const { id } = useLocalSearchParams();
+interface EditIngredientProps {
+  closeModal: () => void;
+  ingredient: IngredientType; 
+}
+
+
+export default function EditIngredient({ closeModal, ingredient }: EditIngredientProps) {
   const { session } = useSession();
   const { getRequest, putRequest, data, loading, error } = useAPI();
-  const [ingredient, setIngredient] = useState<IngredientType | null>(null);
+  const [form, setForm] = useState<IngredientType>({
+    name: ingredient.name || '',
+    calories: ingredient.calories || '',
+    category_id: ingredient.category_id._id || '',
+    unit_id: ingredient.unit_id._id || '',
+  });
+  
   const [categories, setCategories] = useState<ICategoryIngredientType[]>([]);
   const [units, setUnits] = useState<IUnitType[]>([]);
-  const [form, setForm] = useState({
-    name: '',
-    calories: '',
-    category_id: '',
-    unit_id: '',
-  });
-
-  useEffect(() => {
-    if (!session || !id){
-      return;
-    } 
-
-    // Fetch Ingredient Details
-    getRequest(
-      `https://recipe-backend-rose.vercel.app/api/ingredients/${id}`,
-      { headers: { Authorization: `Bearer ${session}` } },
-      (response) => {
-        const ingredientData = response.data;
-        setIngredient(ingredientData);
-        setForm({
-          name: ingredientData.name,
-          calories: ingredientData.calories,
-          category_id: ingredientData.category_id,
-          unit_id: ingredientData.unit_id,
-        });
-      }
-    );
-  }, [id, session]);
 
   useEffect(() => {
     // Fetch Categories
     getRequest(
       `https://recipe-backend-rose.vercel.app/api/ingredients-categories`,
       { headers: { Authorization: `Bearer ${session}` } },
-      (response) => 
-        // console.log("Cats",response)
-      setCategories(response)
+      (response) => setCategories(response)
     );
 
     // Fetch Units
     getRequest(
       `https://recipe-backend-rose.vercel.app/api/units`,
       { headers: { Authorization: `Bearer ${session}` } },
-      (response) =>
-      // console.log("uni",response)
-      setUnits(response)
+      (response) => setUnits(response)
     );
   }, [session]);
 
-  const handleChange = (field: string, value: string) => {
+  const handleChange = (field: string, value: any) => {
     setForm((prev) => ({
       ...prev,
       [field]: value,
@@ -75,19 +51,15 @@ export default function EditIngredient() {
   const handleSubmit = () => {
     const formData = new FormData();
     formData.append('name', form.name);
-    formData.append('calories', form.calories);
-    formData.append('category_id', form.category_id);
-    formData.append('unit_id', form.unit_id);
-
-    console.log('FormData being sent:', {
-      name: form.name,
-      calories: form.calories,
-      category_id: form.category_id,
-      unit_id: form.unit_id,
-    });
+    formData.append('calories', form.calories.toString());
+    formData.append('category_id', form.category_id.toString()); 
+    formData.append('unit_id', form.unit_id.toString());
+  
+    console.log('FormData being sent:', form);
+    console.log('Ingredient ID:', ingredient._id);
     putRequest(
-      `https://recipe-backend-rose.vercel.app/api/ingredients/${id}`,
-      formData, 
+      `https://recipe-backend-rose.vercel.app/api/ingredients/${ingredient._id}`,
+      formData,
       {
         headers: {
           Authorization: `Bearer ${session}`,
@@ -96,17 +68,16 @@ export default function EditIngredient() {
       },
       (response) => {
         console.log(response);
-        router.replace(`/ingredients?updated=${response.data.updatedAt}`);
+        closeModal();
       }
     );
-};
+  };
+  
 
-
-  if (!ingredient || loading) {
+  if (loading) {
     return <ActivityIndicator animating color={MD2Colors.red800} size="large" />;
   }
-  console.log("form",form)
- 
+
   return (
     <View>
       <Text>Name</Text>
@@ -122,7 +93,7 @@ export default function EditIngredient() {
         style={styles.input}
         keyboardType="numeric"
         placeholder="Calories"
-        value={form.calories}
+        value={form.calories.toString()}
         onChangeText={(value) => handleChange('calories', value)}
       />
 
@@ -151,10 +122,12 @@ export default function EditIngredient() {
       </Picker>
 
       <Button title="Submit" onPress={handleSubmit} />
+      <Button title="Cancel" onPress={closeModal} />
       {error && <Text style={styles.error}>{error}</Text>}
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   input: {

@@ -1,7 +1,4 @@
 export interface RecipeType {
-  //had to add this for create to work. I think it adds any any to recipe property and added data for response of put
-    data
-    recipe
     title:string;
     description:string;
     cooking_time:number;
@@ -41,9 +38,8 @@ export interface RecipeIngredientType {
     _id:string,
     name:string,
     calories:number,
-    // need to populate and connect to the right one
-    unit_id: { name: string };
-    recpes:RecipeTypeID[]
+    category_id:string,
+    unit_id: string;
   }
   export interface IngredientRecipe extends RecipeIngredientType {
     ingredient: string; 
@@ -67,7 +63,7 @@ export interface IUser {
 export interface IngredientType {
   _id: string;
   name: string;
-  calories: number;
+  calories: number ;
   category_id: {
     _id: string;
     name: string;
@@ -83,7 +79,6 @@ export interface IngredientType {
   updatedAt:string;
 }
 export interface IUnitType {
-  response
   _id: string;
   name: string;
   abbreviation: string;
@@ -102,4 +97,7 @@ export interface IAuthContext {
     user:IUser | null
 }
 
-export type IResponseType = RecipeTypeID
+export interface IResponseType<T> {
+  message: string;
+  data: T; 
+}
