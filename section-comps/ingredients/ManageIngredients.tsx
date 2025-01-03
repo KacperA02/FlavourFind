@@ -14,12 +14,10 @@ import { useRouter } from "expo-router";
 import { ActivityIndicator, MD2Colors } from "react-native-paper";
 import { IngredientType } from "@/types";
 import DeleteButton from "@/components/DeleteBtn";
-import { useLocalSearchParams } from "expo-router";
 import CreateIngredient from "@/section-comps/ingredients/create";
-import EditIngredient from "@/section-comps/ingredients/edit"; 
+import EditIngredient from "@/section-comps/ingredients/edit";
 
 export default function ManageIngredients() {
-	const { deleted, updated } = useLocalSearchParams();
 	const [ingredients, setIngredients] = useState<IngredientType[]>([]);
 	const [modalVisible, setModalVisible] = useState(false);
 	const [selectedIngredient, setSelectedIngredient] =
@@ -33,9 +31,8 @@ export default function ManageIngredients() {
 
 	// Visablity of Create and Edit Modals
 	const [createModalVisible, setCreateModalVisible] = useState(false);
-  const [editModalVisible, setEditModalVisible] = useState(false);
-
-	useEffect(() => {
+	const [editModalVisible, setEditModalVisible] = useState(false);
+	const fetchIngredients = () => {
 		if (!session) {
 			console.log("No session token available.");
 			return;
@@ -53,7 +50,10 @@ export default function ManageIngredients() {
 				setIngredients(response);
 			}
 		);
-	}, [session, getRequest, deleted, updated]);
+	};
+	useEffect(() => {
+		fetchIngredients();
+	}, [session, getRequest]);
 
 	// User details modal
 	const openIngredientDetails = (ingredient: IngredientType) => {
@@ -82,12 +82,21 @@ export default function ManageIngredients() {
 	const onDeleteIngSuccess = () => {
 		closeModal();
 		alert("Ingredient deleted successfully!");
+		fetchIngredients();
 	};
-  const handleEdit = () => {
-    console.log("Edit button pressed for ingredient ID:", selectedIngredient?._id);
-    setEditModalVisible(true); 
-  };
-  
+	const handleEdit = () => {
+		console.log(
+			"Edit button pressed for ingredient ID:",
+			selectedIngredient?._id
+		);
+		setEditModalVisible(true);
+	};
+	const closeEditModal = () => {
+		setEditModalVisible(false);
+		closeModal();
+		fetchIngredients();
+	};
+
 	// statements to check if something isn't working
 	if (loading) {
 		return (
@@ -115,6 +124,7 @@ export default function ManageIngredients() {
 	// Close Create Ingredient modal
 	const closeCreateModal = () => {
 		setCreateModalVisible(false);
+		fetchIngredients();
 	};
 
 	return (
@@ -175,7 +185,7 @@ export default function ManageIngredients() {
 										? new Date(ingredientDetails.updatedAt).toLocaleString()
 										: ingredientDetails?.updatedAt}
 								</Text>
-                <Button title="Edit Details" onPress={handleEdit} />
+								<Button title="Edit Details" onPress={handleEdit} />
 								<DeleteButton
 									id={ingredientDetails?._id || ""}
 									resource="ingredients"
@@ -215,25 +225,23 @@ export default function ManageIngredients() {
 					</View>
 				</View>
 			</Modal>
-      <Modal
-        visible={editModalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setEditModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-         
-          {selectedIngredient && (
-  <EditIngredient
-    closeModal={() => setEditModalVisible(false)}
-    ingredient={selectedIngredient} 
-  />
-)}
-      
-          </View>
-        </View>
-      </Modal>
+			<Modal
+				visible={editModalVisible}
+				animationType="slide"
+				transparent={true}
+				onRequestClose={closeEditModal}
+			>
+				<View style={styles.modalContainer}>
+					<View style={styles.modalContent}>
+						{selectedIngredient && (
+							<EditIngredient
+								closeModal={closeEditModal}
+								ingredient={selectedIngredient}
+							/>
+						)}
+					</View>
+				</View>
+			</Modal>
 		</View>
 	);
 }

@@ -12,6 +12,7 @@ import { useSession } from "@/contexts/AuthContext";
 import useAPI from "@/hooks/useAPI";
 import { ActivityIndicator, MD2Colors } from "react-native-paper";
 import { IUser } from "@/types";
+import RegisterAdmin from "./create";
 
 export default function ManageUsers() {
 	const [users, setUsers] = useState<IUser[]>([]);
@@ -21,8 +22,17 @@ export default function ManageUsers() {
 	const [userDetailsLoading, setUserDetailsLoading] = useState(false);
 	const { session } = useSession();
 	const { getRequest, loading, error } = useAPI();
+	const [createModalVisible, setCreateModalVisible] = useState(false);
+	const openCreateModal = () => {
+		setCreateModalVisible(true);
+	};
 
-	useEffect(() => {
+	// Close Create Ingredient modal
+	const closeCreateModal = () => {
+		setCreateModalVisible(false);
+		fetchUsers();
+	};
+	const fetchUsers = () => {
 		if (!session) {
 			console.log("No session token available.");
 			return;
@@ -40,8 +50,10 @@ export default function ManageUsers() {
 				setUsers(response.users);
 			}
 		);
+	};
+	useEffect(() => {
+		fetchUsers();
 	}, [session, getRequest]);
-
 	// User details modal
 	const openUserDetails = (user: IUser) => {
 		setUserDetailsLoading(true);
@@ -88,7 +100,7 @@ export default function ManageUsers() {
 	return (
 		<View style={styles.container}>
 			<Text style={styles.title}>Manage Users</Text>
-
+			<Button title="Register New Admin" onPress={openCreateModal} />
 			{/* List users */}
 			<FlatList
 				data={users}
@@ -127,6 +139,8 @@ export default function ManageUsers() {
 									style={styles.modalTitle}
 								>{`${selectedUser?.firstName} ${selectedUser?.lastName}`}</Text>
 								<Text>{`Email: ${userDetails?.email}`}</Text>
+								<Text>{`Role: ${userDetails?.roles[0].name}`}</Text>
+								<Text>{`isDeleted: ${userDetails?.isDeleted}`}</Text>
 								<Text style={styles.totalRecipe}>
 									Total Recipes : {userDetails?.recipes?.length}
 								</Text>
@@ -144,6 +158,18 @@ export default function ManageUsers() {
 								</Pressable>
 							</View>
 						)}
+					</View>
+				</View>
+			</Modal>
+			<Modal
+				visible={createModalVisible}
+				animationType="slide"
+				transparent={false}
+				onRequestClose={closeCreateModal}
+			>
+				<View style={styles.modalContainer}>
+					<View style={styles.modalContent}>
+						<RegisterAdmin closeModal={closeCreateModal} />
 					</View>
 				</View>
 			</Modal>

@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import ManageIngredients from "@/section-comps/ingredients/ManageIngredients";
-import ManageUsers from "../../../section-comps/ManageUsers";
+import ManageUsers from "../../../section-comps/users/ManageUsers";
 import { useEffect, useState } from "react";
 export default function AdminSection() {
 	const { section } = useLocalSearchParams();

@@ -56,14 +56,15 @@ export interface IUser {
   firstName:string;
   lastName:string;
   email: string;
+  isDeleted:boolean;
   recipes: RecipeTypeID[];
   users:IUser[];
-  roles: [{name:string}]; 
+  roles: [{name:string}, {_id:string}]; 
 }
 export interface IngredientType {
   _id: string;
   name: string;
-  calories: number ;
+  calories: number;
   category_id: {
     _id: string;
     name: string;
