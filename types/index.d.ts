@@ -89,6 +89,8 @@ export interface ICategoryIngredientType {
   _id: string;
   name: string;
   isDeleted: boolean;
+  createdAt:string;
+  updatedAt:string;
 }
 export interface IAuthContext {
     signIn: (token:string) => void;

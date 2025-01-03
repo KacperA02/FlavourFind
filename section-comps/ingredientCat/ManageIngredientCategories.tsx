@@ -10,94 +10,91 @@ import {
 import { useState, useEffect } from "react";
 import { useSession } from "@/contexts/AuthContext";
 import useAPI from "@/hooks/useAPI";
-import { useRouter } from "expo-router";
 import { ActivityIndicator, MD2Colors } from "react-native-paper";
-import { IngredientType } from "@/types";
+import { ICategoryIngredientType } from "@/types";
 import DeleteButton from "@/components/DeleteBtn";
-import CreateIngredient from "@/section-comps/ingredients/create";
-import EditIngredient from "@/section-comps/ingredients/edit";
+import CreateCategory from "./create";
+import EditCategory from "./edit";
 
-export default function ManageIngredients() {
-	const [ingredients, setIngredients] = useState<IngredientType[]>([]);
+export default function ManageIngredientCategories() {
+	const [categories, setCategories] = useState<ICategoryIngredientType[]>([]);
 	const [modalVisible, setModalVisible] = useState(false);
-	const [selectedIngredient, setSelectedIngredient] =
-		useState<IngredientType | null>(null);
-	const [ingredientDetails, setIngredientDetails] =
-		useState<IngredientType | null>(null);
-	const [ingredientDetailsLoading, setIngredientDetailsLoading] =
-		useState(false);
+	const [selectedCategory, setSelectedCategory] =
+		useState<ICategoryIngredientType | null>(null);
+	const [categoryDetails, setCategoryDetails] =
+		useState<ICategoryIngredientType | null>(null);
+	const [categoryDetailsLoading, setCategoryDetailsLoading] = useState(false);
 	const { session } = useSession();
 	const { getRequest, loading, error } = useAPI();
-
-	// Visablity of Create and Edit Modals
 	const [createModalVisible, setCreateModalVisible] = useState(false);
 	const [editModalVisible, setEditModalVisible] = useState(false);
-	const fetchIngredients = () => {
+
+	const fetchCategories = () => {
 		if (!session) {
 			console.log("No session token available.");
 			return;
 		}
 
 		getRequest(
-			`https://recipe-backend-rose.vercel.app/api/ingredients`,
+			`https://recipe-backend-rose.vercel.app/api/ingredients-categories`,
 			{
 				headers: {
 					Authorization: `Bearer ${session}`,
 				},
 			},
 			(response) => {
-				console.log(response);
-				setIngredients(response);
+				setCategories(response);
 			}
 		);
 	};
+
 	useEffect(() => {
-		fetchIngredients();
+		fetchCategories();
 	}, [session, getRequest]);
 
-	// User details modal
-	const openIngredientDetails = (ingredient: IngredientType) => {
-		setIngredientDetailsLoading(true);
-		setSelectedIngredient(ingredient);
+	// Singular Category details
+	const openCategoryDetails = (category: ICategoryIngredientType) => {
+		setCategoryDetailsLoading(true);
+		setSelectedCategory(category);
 		setModalVisible(true);
 
 		getRequest(
-			`https://recipe-backend-rose.vercel.app/api/ingredients/${ingredient._id}`,
+			`https://recipe-backend-rose.vercel.app/api/ingredients-categories/${category._id}`,
 			{
 				headers: {
 					Authorization: `Bearer ${session}`,
 				},
 			},
 			(response) => {
-				setIngredientDetails(response.data);
-				setIngredientDetailsLoading(false);
+				setCategoryDetails(response.data);
+				setCategoryDetailsLoading(false);
 			}
 		);
 	};
+
 	const closeModal = () => {
 		setModalVisible(false);
-		setSelectedIngredient(null);
-		setIngredientDetails(null);
+		setSelectedCategory(null);
+		setCategoryDetails(null);
 	};
-	const onDeleteIngSuccess = () => {
+
+	const onDeleteCategorySuccess = () => {
 		closeModal();
-		alert("Ingredient deleted successfully!");
-		fetchIngredients();
+		alert("Category deleted successfully!");
+		fetchCategories();
 	};
+
 	const handleEdit = () => {
-		console.log(
-			"Edit button pressed for ingredient ID:",
-			selectedIngredient?._id
-		);
+		console.log("Edit button pressed for category ID:", selectedCategory?._id);
 		setEditModalVisible(true);
 	};
+
 	const closeEditModal = () => {
 		setEditModalVisible(false);
 		closeModal();
-		fetchIngredients();
+		fetchCategories();
 	};
 
-	// statements to check if something isn't working
 	if (loading) {
 		return (
 			<ActivityIndicator
@@ -109,47 +106,46 @@ export default function ManageIngredients() {
 	}
 
 	if (error) {
-		return <Text>Error loading ingredients.</Text>;
+		return <Text>Error loading categories.</Text>;
 	}
 
-	if (!ingredients.length) {
-		return <Text>No Ingredients found.</Text>;
+	if (!categories.length) {
+		return <Text>No Categories found.</Text>;
 	}
 
-	// Open Create Ingredient modal
+	// Open & Close Create Category modal
 	const openCreateModal = () => {
 		setCreateModalVisible(true);
 	};
 
-	// Close Create Ingredient modal
 	const closeCreateModal = () => {
 		setCreateModalVisible(false);
-		fetchIngredients();
+		fetchCategories();
 	};
-
+	console.log(selectedCategory);
 	return (
 		<View style={styles.container}>
-			<Text style={styles.title}>Manage Ingredients</Text>
+			<Text style={styles.title}>Manage Ingredient Categories</Text>
 
-			{/* Create Ingredient Button */}
-			<Button title="Create Ingredient" onPress={openCreateModal} />
+			{/* Create Category Button */}
+			<Button title="Create Category" onPress={openCreateModal} />
 
-			{/* List ingredients */}
+			{/* List categories */}
 			<FlatList
-				data={ingredients}
+				data={categories}
 				keyExtractor={(item) => item._id.toString()}
 				renderItem={({ item }) => (
-					<View>
+					<View style={styles.categoryCard}>
 						<Text>{item.name}</Text>
 						<Button
-							title="View Ingredient Details"
-							onPress={() => openIngredientDetails(item)}
+							title="View Category Details"
+							onPress={() => openCategoryDetails(item)}
 						/>
 					</View>
 				)}
 			/>
 
-			{/* Ingredient details modal */}
+			{/* Category details modal */}
 			<Modal
 				visible={modalVisible}
 				animationType="slide"
@@ -158,7 +154,7 @@ export default function ManageIngredients() {
 			>
 				<View style={styles.modalContainer}>
 					<View style={styles.modalContent}>
-						{ingredientDetailsLoading ? (
+						{categoryDetailsLoading ? (
 							<ActivityIndicator
 								animating={true}
 								color={MD2Colors.red800}
@@ -166,43 +162,26 @@ export default function ManageIngredients() {
 							/>
 						) : (
 							<View>
-								<Text style={styles.modalTitle}>
-									{selectedIngredient?.name}
-								</Text>
-								<Text>{`Calories: ${ingredientDetails?.calories}`}</Text>
-								<Text>{`Category name: ${ingredientDetails?.category_id.name} | ${ingredientDetails?.category_id._id}`}</Text>
-								<Text>{`unit: ${ingredientDetails?.unit_id?.name} | '${ingredientDetails?.unit_id?.abbreviation}' | ${ingredientDetails?.unit_id?._id}`}</Text>
-								<Text>{`Deleted?: ${ingredientDetails?.isDeleted}`}</Text>
+								<Text style={styles.modalTitle}>{selectedCategory?.name}</Text>
 								<Text>
 									Created At:{" "}
-									{ingredientDetails?.createdAt
-										? new Date(ingredientDetails.createdAt).toLocaleString()
-										: ingredientDetails?.createdAt}
+									{categoryDetails?.createdAt
+										? new Date(categoryDetails.createdAt).toLocaleString()
+										: categoryDetails?.createdAt}
 								</Text>
 								<Text>
 									Updated At:{" "}
-									{ingredientDetails?.updatedAt
-										? new Date(ingredientDetails.updatedAt).toLocaleString()
-										: ingredientDetails?.updatedAt}
+									{categoryDetails?.updatedAt
+										? new Date(categoryDetails.updatedAt).toLocaleString()
+										: categoryDetails?.updatedAt}
 								</Text>
+								<Text>{`Deleted?: ${categoryDetails?.isDeleted}`}</Text>
 								<Button title="Edit Details" onPress={handleEdit} />
 								<DeleteButton
-									id={ingredientDetails?._id || ""}
-									resource="ingredients"
-									onDeleteSuccess={onDeleteIngSuccess}
+									id={categoryDetails?._id || ""}
+									resource="ingredients-categories"
+									onDeleteSuccess={onDeleteCategorySuccess}
 								/>
-								<Text style={styles.totalRecipe}>
-									Total Recipes : {ingredientDetails?.recipes?.length}
-								</Text>
-								{ingredientDetails?.recipes?.length ? (
-									ingredientDetails.recipes.map((recipe, index) => (
-										<Text key={index} style={styles.recipeName}>
-											Recipe {index + 1} : {recipe}
-										</Text>
-									))
-								) : (
-									<Text>There are no recipes with this ingredient</Text>
-								)}
 								<Pressable onPress={closeModal}>
 									<Text style={styles.closeButton}>Close</Text>
 								</Pressable>
@@ -212,7 +191,7 @@ export default function ManageIngredients() {
 				</View>
 			</Modal>
 
-			{/* Create Ingredient Modal */}
+			{/* Create Category Modal */}
 			<Modal
 				visible={createModalVisible}
 				animationType="slide"
@@ -221,10 +200,12 @@ export default function ManageIngredients() {
 			>
 				<View style={styles.modalContainer}>
 					<View style={styles.modalContent}>
-						<CreateIngredient closeModal={closeCreateModal} />
+						<CreateCategory closeModal={closeCreateModal} />
 					</View>
 				</View>
 			</Modal>
+
+			{/* Edit Category Modal */}
 			<Modal
 				visible={editModalVisible}
 				animationType="slide"
@@ -233,10 +214,10 @@ export default function ManageIngredients() {
 			>
 				<View style={styles.modalContainer}>
 					<View style={styles.modalContent}>
-						{selectedIngredient && (
-							<EditIngredient
+						{selectedCategory && (
+							<EditCategory
 								closeModal={closeEditModal}
-								ingredient={selectedIngredient}
+								category={selectedCategory}
 							/>
 						)}
 					</View>
@@ -256,19 +237,11 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 		marginBottom: 10,
 	},
-	totalRecipe: {
-		fontWeight: "bold",
-		marginBottom: 5,
-	},
-	userCard: {
+	categoryCard: {
 		marginBottom: 10,
 		padding: 10,
 		backgroundColor: "#f0f0f0",
 		borderRadius: 5,
-	},
-	userName: {
-		fontSize: 18,
-		marginBottom: 5,
 	},
 	modalOverlay: {
 		flex: 1,
@@ -291,9 +264,6 @@ const styles = StyleSheet.create({
 		fontSize: 24,
 		fontWeight: "bold",
 		marginBottom: 10,
-	},
-	recipeName: {
-		marginTop: 5,
 	},
 	closeButton: {
 		color: "blue",

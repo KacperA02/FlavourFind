@@ -1,8 +1,10 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Tabs } from 'expo-router';
+import { useState, useEffect } from 'react';
 import { useSession } from '@/contexts/AuthContext';
 import LoginForm from '@/components/LoginForm';
 import { useLocalSearchParams } from 'expo-router'; 
+import { TabRouter } from '@react-navigation/native';
 export default function TabLayout() {
   const { session, user } = useSession();
   const { section } = useLocalSearchParams();
@@ -10,7 +12,7 @@ export default function TabLayout() {
   if (!session) {
     return <LoginForm />;
   }
-  const isAdmin = (user?.roles?.some(role => role.name === 'admin'))
+  const isAdmin = (user?.roles?.some(role => 'name' in role && role.name === 'admin'))
   
   return (
     <Tabs screenOptions={{ tabBarActiveTintColor: 'blue' }}>
@@ -68,29 +70,14 @@ export default function TabLayout() {
           }}
         />
       )}
-       {isAdmin && (
+       {isAdmin && section && (
         <Tabs.Screen
-          name="(admin)/[section]"  
+          name={`(admin)/[section]`} 
           options={{
-            title:`Admin ${section} Page`,
+            // wasnt loading properly, kept showing the one before unless the page was refreshed
+            // title:`Admin ${section} Page`,
+            title: `Admin Page`,
             href:null
-          }}
-        />
-      )}
-       {isAdmin ? (
-        <Tabs.Screen
-          name="(admin)/ingredients/edit"
-          options={{
-            title: 'Ingredient Edit',
-            href: null,
-          }}
-        />
-      ) : (
-        <Tabs.Screen
-          name="(admin)/ingredients/edit"
-          options={{
-            title: 'Ingredient Edit',
-            href: null,
           }}
         />
       )}
