@@ -17,13 +17,7 @@ export default function TabLayout() {
   return (
     <Tabs screenOptions={{ tabBarActiveTintColor: 'blue' }}>
 {/* recipe tabs */}
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Profile',
-          tabBarIcon: ({ color }) => <FontAwesome size={28} name="user" color={color} />,
-        }}
-      />
+      
      <Tabs.Screen
         name="(auth)/recipes/index"
         options={{
@@ -70,7 +64,7 @@ export default function TabLayout() {
           }}
         />
       )}
-       {isAdmin && section && (
+       {isAdmin && (
         <Tabs.Screen
           name={`(admin)/[section]`} 
           options={{
@@ -99,6 +93,14 @@ export default function TabLayout() {
           }}
         />
       )}
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: 'Profile',
+          tabBarIcon: ({ color }) => <FontAwesome size={28} name="user" color={color} />,
+        }}
+      />
     </Tabs>
+    
   );
 }

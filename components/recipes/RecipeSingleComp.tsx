@@ -20,6 +20,7 @@ const onDeleteRecSuccess = () => {
 // const LeftContent = (myProps) => <Avatar.Icon {...MyProps} icon="food" />;
 
 export default function RecipeCardSingle({ recipe, user }: MyProps) {
+	const isAdmin = (user?.roles?.some(role => 'name' in role && role.name === 'admin'))
 	return (
 		<Card style={styles.card}>
 			{/* Card Header */}
@@ -64,7 +65,7 @@ export default function RecipeCardSingle({ recipe, user }: MyProps) {
 			</Card.Content>
 
 			{/* Card Actions */}
-			{user && user._id === recipe.user ? (
+			{user && user._id === recipe.user || isAdmin? (
 				<Card.Actions>
 					<Button onPress={() => router.push(`/recipes/${recipe._id}/edit`)}>
 						Edit Details

@@ -5,7 +5,7 @@ import { useRouter } from "expo-router";
 export default function AdminIndex() {
   const router = useRouter();
   const { session, user } = useSession();
-  const isAdmin = (user?.roles?.some(role => role.name === 'admin'))
+  const isAdmin = (user?.roles?.some(role => 'name' in role && role.name === 'admin'))
     // redirects to login page if user isn't logged in
     if (!session || !isAdmin) {
       return <LoginForm />;
@@ -17,6 +17,8 @@ export default function AdminIndex() {
       <Button title="Manage Users" onPress={() => router.push("/users")} />
       <Button title="Manage Ingredients" onPress={() => router.push("/ingredients")} />
       <Button title="Manage Ingredient Categories" onPress={() => router.push("/ingredientCat")} />
+      <Button title="Manage Recipe Categories" onPress={() => router.push("/recipeCat")} />
+      <Button title="Manage units" onPress={() => router.push("/units")} />
       
     </View>
   );

@@ -3,6 +3,8 @@ import { useLocalSearchParams } from "expo-router";
 import ManageIngredients from "@/section-comps/ingredients/ManageIngredients";
 import ManageUsers from "../../../section-comps/users/ManageUsers";
 import ManageIngredientCategories from "@/section-comps/ingredientCat/ManageIngredientCategories";
+import ManageRecipeCategories from "@/section-comps/recipeCat/ManageRecipeCat";
+import ManageUnits from "@/section-comps/units/ManageUnits";
 // import { useEffect, useState } from "react";
 export default function AdminSection() {
 	const { section } = useLocalSearchParams();
@@ -21,6 +23,10 @@ export default function AdminSection() {
 				return <ManageUsers />;
 			case "ingredientCat":
 				return <ManageIngredientCategories />;
+			case "recipeCat":
+				return <ManageRecipeCategories />;
+			case "units":
+				return <ManageUnits />;
 			default:
 				return <Text style={styles.error}>Invalid section: {section}</Text>;
 		}

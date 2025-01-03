@@ -84,8 +84,17 @@ export interface IUnitType {
   name: string;
   abbreviation: string;
   isDeleted: boolean;
+  createdAt:string;
+  updatedAt:string;
 }
 export interface ICategoryIngredientType {
+  _id: string;
+  name: string;
+  isDeleted: boolean;
+  createdAt:string;
+  updatedAt:string;
+}
+export interface ICategoryRecipeType {
   _id: string;
   name: string;
   isDeleted: boolean;
