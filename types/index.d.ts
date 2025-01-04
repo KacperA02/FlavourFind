@@ -107,6 +107,7 @@ export interface IAuthContext {
     session?:string | null;
     isLoading:boolean;
     user:IUser | null
+    isAdmin:boolean;
 }
 
 export interface IResponseType<T> {

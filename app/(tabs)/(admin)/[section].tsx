@@ -5,16 +5,21 @@ import ManageUsers from "../../../section-comps/users/ManageUsers";
 import ManageIngredientCategories from "@/section-comps/ingredientCat/ManageIngredientCategories";
 import ManageRecipeCategories from "@/section-comps/recipeCat/ManageRecipeCat";
 import ManageUnits from "@/section-comps/units/ManageUnits";
+import { useSession } from "@/contexts/AuthContext";
+import NotFound from "@/app/[...missing]";
 // import { useEffect, useState } from "react";
 export default function AdminSection() {
 	const { section } = useLocalSearchParams();
+	const {isAdmin } = useSession();
 	// const [currentSection, setCurrentSection] = useState(section);
 
 	// Update the current section when the `section` changes
 	// useEffect(() => {
 	// 	setCurrentSection(section);
 	// }, [section]);
-
+	if(!isAdmin){
+		return <NotFound />
+	}
 	const renderSectionContent = () => {
 		switch (section) {
 			case "ingredients":

@@ -6,13 +6,12 @@ import LoginForm from '@/components/LoginForm';
 import { useLocalSearchParams } from 'expo-router'; 
 import { TabRouter } from '@react-navigation/native';
 export default function TabLayout() {
-  const { session, user } = useSession();
+  const { session, isAdmin } = useSession();
   const { section } = useLocalSearchParams();
   // redirects to login page if user isn't logged in
   if (!session) {
     return <LoginForm />;
   }
-  const isAdmin = (user?.roles?.some(role => 'name' in role && role.name === 'admin'))
   
   return (
     <Tabs screenOptions={{ tabBarActiveTintColor: 'blue' }}>
@@ -79,7 +78,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="(admin)/index"  
           options={{
-            title:'Admin Panel',
+            title: `Page Not found`,
             href:null
           }}
         />
@@ -88,7 +87,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="(admin)/[section]"  
           options={{
-            title:'Admin Panel',
+            title: `Page Not found`,
             href:null
           }}
         />

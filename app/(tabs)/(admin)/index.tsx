@@ -4,8 +4,7 @@ import LoginForm from "@/components/LoginForm";
 import { useRouter } from "expo-router";
 export default function AdminIndex() {
   const router = useRouter();
-  const { session, user } = useSession();
-  const isAdmin = (user?.roles?.some(role => 'name' in role && role.name === 'admin'))
+  const { session, isAdmin } = useSession();
     // redirects to login page if user isn't logged in
     if (!session || !isAdmin) {
       return <LoginForm />;
