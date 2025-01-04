@@ -6,6 +6,7 @@ export interface RecipeType {
     category:recipeCategoryType;
     user:string;
     image_path?:string;
+    image?:string;
     isDeleted:boolean;
     ingredients: RecipeIngredientType[];
 }
@@ -39,7 +40,7 @@ export interface RecipeIngredientType {
     name:string,
     calories:number,
     category_id:string,
-    unit_id: string;
+    unit_id: IUnitType.name;
   }
   export interface IngredientRecipe extends RecipeIngredientType {
     ingredient: string; 
