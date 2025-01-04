@@ -1,15 +1,22 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet,Image} from 'react-native';
 import { Card, Title, Paragraph } from 'react-native-paper';
 import { Link } from 'expo-router';
 import { RecipeTypeID } from '@/types';
-
 interface MyProps {
   recipe: RecipeTypeID;
 }
 
 export default function RecipeItem({ recipe }: MyProps) {
+  const imageUrl = `${process.env.EXPO_PUBLIC_MY_IMAGE_URL}${recipe?.image_path}`;
   return (
     <Card style={styles.card}>
+       {recipe.image_path && (
+        <Image
+          source={{ uri: imageUrl }}
+          style={styles.image}
+          resizeMode="cover"
+        />
+      )}
       <Card.Content>
         <Link
           href={{
@@ -38,6 +45,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 3,
+    overflow: 'hidden',
+  },
+  image: {
+    width: '100%',
+    height: 50, 
   },
   link: {
     textDecorationLine: 'none',

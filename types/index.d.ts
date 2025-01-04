@@ -5,7 +5,7 @@ export interface RecipeType {
     instructions:string;
     category:recipeCategoryType;
     user:string;
-    image?:string;
+    image_path?:string;
     isDeleted:boolean;
     ingredients: RecipeIngredientType[];
 }
