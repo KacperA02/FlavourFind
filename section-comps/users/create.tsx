@@ -35,7 +35,7 @@ export default function RegisterAdmin({
 
 		console.log("FormData being sent:", formData);
 		postRequest(
-			`https://recipe-backend-rose.vercel.app/api/users/register/admin`,
+			`${process.env.EXPO_PUBLIC_DEV_URL}users/register/admin`,
 			formData,
 			{
 				headers: {

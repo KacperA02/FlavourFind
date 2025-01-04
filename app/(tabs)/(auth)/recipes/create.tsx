@@ -31,7 +31,7 @@ export default function Page() {
     // Had to get all the categories to display
     useEffect(() => {
         axios
-          .get('https://recipe-backend-rose.vercel.app/api/recipes-categories')
+          .get(`${process.env.EXPO_PUBLIC_DEV_URL}recipes-categories`)
           .then((response) => {
             console.log(response.data);
             setRecCategory(response.data);
@@ -49,7 +49,7 @@ export default function Page() {
     // Had to get all the ingredients to display
     useEffect(() => {
         axios
-          .get('https://recipe-backend-rose.vercel.app/api/ingredients')
+          .get(`${process.env.EXPO_PUBLIC_DEV_URL}ingredients`)
           .then((response) => {
             console.log(response.data);
             setIngredientList(response.data);
@@ -126,7 +126,7 @@ export default function Page() {
              formData.append(`ingredients[${index}].ingredient`, ingredient.ingredient);
              formData.append(`ingredients[${index}].quantity`, ingredient.quantity.toString());
          });    
-        postRequest('https://recipe-backend-rose.vercel.app/api/recipes', formData, {
+        postRequest(`${process.env.EXPO_PUBLIC_DEV_URL}recipes`, formData, {
             headers: {
                 Authorization: `Bearer ${session}`,
                 // had to add it as a multi part because json ingredients werent working

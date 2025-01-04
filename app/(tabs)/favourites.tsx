@@ -16,7 +16,7 @@ export default function FavoritesTab() {
     if (session) {
       setLoadingFavorites(true);
       axios
-        .get("https://recipe-backend-rose.vercel.app/api/users/favourites", {
+        .get(`${process.env.EXPO_PUBLIC_DEV_URL}users/favourites`, {
           headers: { Authorization: `Bearer ${session}` },
         })
         .then((response) => {

@@ -38,7 +38,7 @@ export default function Page() {
   useEffect(() => {
     if (!session || !id) return;
     axios
-      .get(`https://recipe-backend-rose.vercel.app/api/recipes/${id}`, {
+      .get(`${process.env.EXPO_PUBLIC_DEV_URL}recipes/${id}`, {
         headers: { Authorization: `Bearer ${session}` },
       })
       .then((response) => {
@@ -63,7 +63,7 @@ export default function Page() {
   // Fetch Categories
   useEffect(() => {
     axios
-      .get('https://recipe-backend-rose.vercel.app/api/recipes-categories')
+      .get(`${process.env.EXPO_PUBLIC_DEV_URL}recipes-categories`)
       .then((response) => setRecCategory(response.data))
       .catch((err) => console.error(err));
   }, []);
@@ -71,7 +71,7 @@ export default function Page() {
   // Fetch Ingredients
   useEffect(() => {
     axios
-      .get('https://recipe-backend-rose.vercel.app/api/ingredients')
+      .get(`${process.env.EXPO_PUBLIC_DEV_URL}ingredients`)
       .then((response) => setIngredientList(response.data))
       .catch((err) => console.error(err));
   }, []);
@@ -135,7 +135,7 @@ export default function Page() {
     // formData.forEach((value, key) => console.log(`${key}: ${value}`));
     
     putRequest(
-      `https://recipe-backend-rose.vercel.app/api/recipes/${id}`,
+      `${process.env.EXPO_PUBLIC_DEV_URL}recipes/${id}`,
       formData,
       {
         headers: {

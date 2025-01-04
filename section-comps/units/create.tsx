@@ -32,7 +32,7 @@ export default function CreateUnit({
 		console.log("FormData being sent:", formData);
 
 		postRequest(
-			`https://recipe-backend-rose.vercel.app/api/units`,
+			`${process.env.EXPO_PUBLIC_DEV_URL}units`,
 			formData,
 			{
 				headers: {

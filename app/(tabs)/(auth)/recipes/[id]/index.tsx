@@ -23,7 +23,7 @@ export default function Tab() {
 		}
 
 		getRequest(
-			`https://recipe-backend-rose.vercel.app/api/recipes/${id}`,
+			`${process.env.EXPO_PUBLIC_DEV_URL}recipes/${id}`,
 			{
 				headers: {
 					Authorization: `Bearer ${session}`,

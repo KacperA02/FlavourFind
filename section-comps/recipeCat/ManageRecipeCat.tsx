@@ -36,7 +36,7 @@ export default function ManageRecipeCategories() {
 		}
 
 		getRequest(
-			`https://recipe-backend-rose.vercel.app/api/recipes-categories`,
+			`${process.env.EXPO_PUBLIC_DEV_URL}recipes-categories`,
 			{
 				headers: {
 					Authorization: `Bearer ${session}`,
@@ -59,7 +59,7 @@ export default function ManageRecipeCategories() {
 		setModalVisible(true);
 
 		getRequest(
-			`https://recipe-backend-rose.vercel.app/api/recipes-categories/${category._id}`,
+			`${process.env.EXPO_PUBLIC_DEV_URL}recipes-categories/${category._id}`,
 			{
 				headers: {
 					Authorization: `Bearer ${session}`,

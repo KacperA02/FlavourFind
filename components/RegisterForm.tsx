@@ -28,7 +28,7 @@ export default function RegisterForm({ onClose }: RegisterFormProps) {
   const handlePress = () => {
     console.log("Register Clicked");
 
-    axios.post('https://recipe-backend-rose.vercel.app/api/users/register', {
+    axios.post(`${process.env.EXPO_PUBLIC_DEV_URL}users/register`, {
         // trim function to remove any white spaces
         firstName: form.firstName.trim(),
         lastName: form.lastName.trim(),

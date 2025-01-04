@@ -39,7 +39,7 @@ export default function ManageUsers() {
 		}
 
 		getRequest(
-			`https://recipe-backend-rose.vercel.app/api/users/all`,
+			`${process.env.EXPO_PUBLIC_DEV_URL}users/all`,
 			{
 				headers: {
 					Authorization: `Bearer ${session}`,
@@ -61,7 +61,7 @@ export default function ManageUsers() {
 		setModalVisible(true);
 
 		getRequest(
-			`https://recipe-backend-rose.vercel.app/api/users/specific/${user._id}`,
+			`${process.env.EXPO_PUBLIC_DEV_URL}users/specific/${user._id}`,
 			{
 				headers: {
 					Authorization: `Bearer ${session}`,

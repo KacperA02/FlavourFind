@@ -39,7 +39,7 @@ export default function EditUnit({
 		// console.log("unit ID:", unit._id);
 
 		putRequest(
-			`https://recipe-backend-rose.vercel.app/api/units/${unit._id}`,
+			`${process.env.EXPO_PUBLIC_DEV_URL}units/${unit._id}`,
 			formData,
 			{
 				headers: {

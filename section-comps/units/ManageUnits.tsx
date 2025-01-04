@@ -26,7 +26,7 @@ export default function ManageUnits() {
     }
 
     getRequest(
-      `https://recipe-backend-rose.vercel.app/api/units`,
+      `${process.env.EXPO_PUBLIC_DEV_URL}units`,
       {
         headers: {
           Authorization: `Bearer ${session}`,
@@ -48,7 +48,7 @@ export default function ManageUnits() {
     setModalVisible(true);
 
     getRequest(
-      `https://recipe-backend-rose.vercel.app/api/units/${unit._id}`,
+      `${process.env.EXPO_PUBLIC_DEV_URL}units/${unit._id}`,
       {
         headers: {
           Authorization: `Bearer ${session}`,

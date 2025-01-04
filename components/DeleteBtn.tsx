@@ -15,7 +15,7 @@ const router = useRouter();
       return;
     }
   
-    const url = `https://recipe-backend-rose.vercel.app/api/${resource}/${id}`;
+    const url = `${process.env.EXPO_PUBLIC_DEV_URL}${resource}/${id}`;
   
     deleteRequest(
       url,

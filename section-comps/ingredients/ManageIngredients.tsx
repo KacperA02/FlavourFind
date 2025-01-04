@@ -39,7 +39,7 @@ export default function ManageIngredients() {
 		}
 
 		getRequest(
-			`https://recipe-backend-rose.vercel.app/api/ingredients`,
+			`${process.env.EXPO_PUBLIC_DEV_URL}ingredients`,
 			{
 				headers: {
 					Authorization: `Bearer ${session}`,
@@ -62,7 +62,7 @@ export default function ManageIngredients() {
 		setModalVisible(true);
 
 		getRequest(
-			`https://recipe-backend-rose.vercel.app/api/ingredients/${ingredient._id}`,
+			`${process.env.EXPO_PUBLIC_DEV_URL}ingredients/${ingredient._id}`,
 			{
 				headers: {
 					Authorization: `Bearer ${session}`,

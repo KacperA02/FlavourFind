@@ -9,7 +9,7 @@ import RecipeItem from "@/components/recipes/RecipeItem";
 import { RecipeTypeID } from "@/types";
 import { useLocalSearchParams } from "expo-router";
 export default function Tab() {
-	const devUrl = process.env.EXPO_PUBLIC_DEV_URL;
+	// const devUrl = process.env.EXPO_PUBLIC_DEV_URL;
 	const [recipes, setRecipes] = useState([]);
 	// using snack bar to display any error messages
 	const [snackBarVisible, setSnackBarVisible] = useState(false);
@@ -18,7 +18,7 @@ export default function Tab() {
 	//  getting the recipes
 	useEffect(() => {
 		axios
-			.get("https://recipe-backend-rose.vercel.app/api/recipes")
+			.get(`${process.env.EXPO_PUBLIC_DEV_URL}recipes`)
 			.then((response) => {
 				// filtering recipes to find ones that aren't deleted
 				const filteredRecipe = response.data.filter(

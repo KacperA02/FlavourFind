@@ -37,7 +37,7 @@ export default function EditCategory({
 		console.log("Category ID:", category._id);
 
 		putRequest(
-			`https://recipe-backend-rose.vercel.app/api/ingredients-categories/${category._id}`,
+			`${process.env.EXPO_PUBLIC_DEV_URL}ingredients-categories/${category._id}`,
 			formData,
 			{
 				headers: {

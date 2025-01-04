@@ -11,11 +11,12 @@ export default function Tab() {
 	const { session, signOut, user } = useSession();
 	const [myRecipes, setMyRecipes] = useState([]);
 	const { deleted, updated } = useLocalSearchParams();
-
+	// TOOK TOO LONG THIS WAY
+    // const API_URL = process.env.EXPO_PUBLIC_DEV_URL;
 	useEffect(() => {
 		if (session) {
 			axios
-				.get("https://recipe-backend-rose.vercel.app/api/users/myRecipes", {
+				.get(`${process.env.EXPO_PUBLIC_DEV_URL}users/myRecipes`, {
 					headers: { Authorization: `Bearer ${session}` },
 				})
 				.then((response) => {

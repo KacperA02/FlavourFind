@@ -30,7 +30,7 @@ export default function CreateCategory({
 		console.log("FormData being sent:", formData);
 
 		postRequest(
-			`https://recipe-backend-rose.vercel.app/api/recipes-categories`,
+			`${process.env.EXPO_PUBLIC_DEV_URL}recipes-categories`,
 			formData,
 			{
 				headers: {

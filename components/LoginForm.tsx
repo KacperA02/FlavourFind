@@ -23,7 +23,7 @@ export default function LoginForm() {
     const handlePress = () => {
         console.log("Clicked");
 
-        axios.post('https://recipe-backend-rose.vercel.app/api/users/login', {
+        axios.post(`${process.env.EXPO_PUBLIC_DEV_URL}users/login`, {
             // trim function removes whitespaces
             email: form.email.trim(),
             password: form.password

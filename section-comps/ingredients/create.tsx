@@ -57,7 +57,7 @@ export default function CreateIngredient({ closeModal }: { closeModal: () => voi
 			unit_id: form.unit_id,
 		});
 		postRequest(
-			`https://recipe-backend-rose.vercel.app/api/ingredients`,
+			`${process.env.EXPO_PUBLIC_DEV_URL}ingredients`,
 			formData,
 			{
 				headers: {

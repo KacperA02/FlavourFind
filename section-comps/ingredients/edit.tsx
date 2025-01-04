@@ -36,14 +36,14 @@ export default function EditIngredient({
 	useEffect(() => {
 		// Fetch Categories
 		getRequest(
-			`https://recipe-backend-rose.vercel.app/api/ingredients-categories`,
+			`${process.env.EXPO_PUBLIC_DEV_URL}ingredients-categories`,
 			{ headers: { Authorization: `Bearer ${session}` } },
 			(response) => setCategories(response)
 		);
 
 		// Fetch Units
 		getRequest(
-			`https://recipe-backend-rose.vercel.app/api/units`,
+			`${process.env.EXPO_PUBLIC_DEV_URL}units`,
 			{ headers: { Authorization: `Bearer ${session}` } },
 			(response) => setUnits(response)
 		);
@@ -66,7 +66,7 @@ export default function EditIngredient({
 		console.log("FormData being sent:", form);
 		console.log("Ingredient ID:", ingredient._id);
 		putRequest(
-			`https://recipe-backend-rose.vercel.app/api/ingredients/${ingredient._id}`,
+			`${process.env.EXPO_PUBLIC_DEV_URL}ingredients/${ingredient._id}`,
 			formData,
 			{
 				headers: {
