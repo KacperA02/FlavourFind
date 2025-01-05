@@ -3,7 +3,7 @@ import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
 
 type UseStateHook<T> = [[boolean, T | null], (value: T | null) => void];
-
+// function to set the state of the async storage
 function useAsyncState<T>(
   initialValue: [boolean, T | null] = [true, null],
 ): UseStateHook<T> {
@@ -12,7 +12,7 @@ function useAsyncState<T>(
     initialValue
   ) as UseStateHook<T>;
 }
-
+// function to get the storage item
 export async function setStorageItemAsync(key: string, value: string | null) {
   if (Platform.OS === 'web') {
     try {
@@ -32,12 +32,10 @@ export async function setStorageItemAsync(key: string, value: string | null) {
     }
   }
 }
-
+// function to use the storage state
 export function useStorageState(key: string): UseStateHook<string> {
-  // Public
   const [state, setState] = useAsyncState<string>();
 
-  // Get
   useEffect(() => {
     if (Platform.OS === 'web') {
       try {

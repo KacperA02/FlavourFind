@@ -15,8 +15,8 @@ export default function Tab() {
 	const { deleted, updated } = useLocalSearchParams();
 	const [snackBarMessage, setSnackBarMessage] = useState("");
 	const [snackBarVisible, setSnackBarVisible] = useState(false);
-	// TOOK TOO LONG THIS WAY
-    // const API_URL = process.env.EXPO_PUBLIC_DEV_URL;
+	
+    // const API_URL = process.env.EXPO_PUBLIC_DEV_URL; " LOADING TOOK TOO LONG THIS WAY"
 	useEffect(() => {
 		if (session) {
 			axios

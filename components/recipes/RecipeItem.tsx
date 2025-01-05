@@ -1,21 +1,20 @@
-import { View, Text, StyleSheet,Image} from 'react-native';
+import { View, Text, StyleSheet, Image } from 'react-native';
 import { Card, Title, Paragraph } from 'react-native-paper';
 import { Link } from 'expo-router';
 import { RecipeTypeID } from '@/types';
+import FavouriteButton from '../FavouriteBtn';
+
 interface MyProps {
   recipe: RecipeTypeID;
 }
 
 export default function RecipeItem({ recipe }: MyProps) {
   const imageUrl = `${process.env.EXPO_PUBLIC_MY_IMAGE_URL}${recipe?.image_path}`;
+
   return (
     <Card style={styles.card}>
-       {recipe.image_path && (
-        <Image
-          source={{ uri: imageUrl }}
-          style={styles.image}
-          resizeMode="cover"
-        />
+      {recipe.image_path && (
+        <Image source={{ uri: imageUrl }} style={styles.image} resizeMode="cover" />
       )}
       <Card.Content>
         <Link
@@ -27,9 +26,11 @@ export default function RecipeItem({ recipe }: MyProps) {
         >
           <Title style={styles.title}>{recipe.title}</Title>
         </Link>
-        {/* Adding Category and Cooking Time */}
         <Paragraph style={styles.category}>Category: {recipe?.category?.name}</Paragraph>
         <Paragraph style={styles.cookingTime}>Cooking Time: {recipe.cooking_time} mins</Paragraph>
+        <FavouriteButton
+          id={recipe._id}
+        />
       </Card.Content>
     </Card>
   );
@@ -49,7 +50,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    height: 100, 
+    height: 100,
   },
   link: {
     textDecorationLine: 'none',
