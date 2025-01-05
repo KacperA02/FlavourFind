@@ -1,4 +1,4 @@
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, ScrollView } from "react-native";
 import { FlatList } from "react-native";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -40,6 +40,7 @@ export default function Tab() {
 	return (
 		<SafeAreaProvider>
 			<SafeAreaView style={styles.container}>
+			
 				{/* Button to create new recipes */}
 				<Link href={{ pathname: "/recipes/create" }}>
 					<Button
@@ -51,13 +52,15 @@ export default function Tab() {
 						Create Your Own Recipe
 					</Button>
 				</Link>
+				
+				<ScrollView>
 				{/* Recipe List */}
-				<FlatList
-					data={recipes}
-					renderItem={({ item }) => <RecipeItem recipe={item} />}
-					keyExtractor={(recipe: RecipeTypeID) => recipe._id}
-				/>
-
+					<FlatList
+						data={recipes}
+						renderItem={({ item }) => <RecipeItem recipe={item} />}
+						keyExtractor={(recipe: RecipeTypeID) => recipe._id}
+					/>
+				</ScrollView>
 				{/* Snack bar to show error messages */}
 				<Snackbar
 					visible={snackBarVisible}
