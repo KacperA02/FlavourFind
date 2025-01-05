@@ -1,5 +1,6 @@
-import { useState, useEffect, useMemo } from 'react';
-import { Text, TextInput, StyleSheet, Button, FlatList, View, Image } from 'react-native';
+import { useState, useEffect } from 'react';
+import { StyleSheet, FlatList, View,Text,
+	TextInput, Image, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useSession } from '@/contexts/AuthContext';
 import useAPI from '@/hooks/useAPI';
@@ -7,7 +8,7 @@ import { useRouter } from 'expo-router';
 import axios from 'axios';
 import { useLocalSearchParams } from 'expo-router';
 import { recipeCategoryType, IIngredientType, RecipeTypeID, IngredientRecipe } from '@/types';
-import { ActivityIndicator, MD2Colors } from 'react-native-paper';
+import { ActivityIndicator, MD2Colors, Menu,Button } from 'react-native-paper';
 import * as ImagePicker from 'expo-image-picker';
 // import { reload } from 'expo-router/build/global-state/routing';
 
@@ -35,6 +36,9 @@ export default function Page() {
     ingredients: [] as IngredientRecipe[],
     image: '',
   });
+
+  const [visibleCategoryMenu, setVisibleCategoryMenu] = useState(false);
+  const [visibleIngredientMenu, setVisibleIngredientMenu] = useState(false);
 
   const { putRequest, data, loading, error } = useAPI();
 
@@ -185,23 +189,25 @@ export default function Page() {
   }
 
   return (
-    <View>
-        <Text>Title</Text>
+    <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.inputs}>
+        <Text style={styles.titles}>Title</Text>
         <TextInput
             style={styles.input}
             placeholder='Recipes Title'
             value={form.title}
+            autoCapitalize="words"
             onChangeText={(value)=> handleChange("title",value)}
         />
 
-        <Text>Description</Text>
+        <Text style={styles.titles}>Description</Text>
         <TextInput
             style={styles.input}
             placeholder='Description'
             value={form.description}
             onChangeText={(value)=> handleChange("description",value)}
         />
-        <Text>Cooking Time (minutes)</Text>
+        <Text style={styles.titles}>Cooking Time (minutes)</Text>
         <TextInput
             style={styles.input}
             keyboardType="numeric"
@@ -209,7 +215,7 @@ export default function Page() {
             value={form.cooking_time}
             onChangeText={(value)=> handleChange("cooking_time",value)}
         />
-         <Text>instructions</Text>
+         <Text style={styles.titles}>instructions</Text>
         <TextInput
             // need to add custom style for this
             style={styles.input}
@@ -217,66 +223,98 @@ export default function Page() {
             value={form.instructions}
             onChangeText={(value)=> handleChange("instructions",value)}
         />
-        <Text>Category</Text>
-        <Picker
-            selectedValue={form.category}
-            style={styles.input}
-            onValueChange={(value:string) => handleChange("category", value)}
-        >
-           <Picker.Item label="Select a category" value="" />
-            {recCategory.map((cat) => (
-            <Picker.Item key={cat._id} label={cat.name} value={cat._id} />
-            ))}
-        </Picker>
-        <Text>Ingredient</Text>
-        <Picker
-            selectedValue={selectedIngredient}
-            style={styles.input}
-            onValueChange={(value: string) => setSelectedIngredient(value)}
-        >
-            {/* mapped the by the filtered list then */}
-            <Picker.Item label="Select an ingredient" value="" />
-            {filteredIngredientList.map((ingredient) => (
-                <Picker.Item key={ingredient._id} label={ingredient.name} value={ingredient._id} />
-            ))}
-        </Picker>
+       <Text style={styles.titles}>Category</Text>
+				<Menu
+					visible={visibleCategoryMenu}
+					onDismiss={() => setVisibleCategoryMenu(false)}
+					anchor={
+						<Button
+							mode="contained"
+							onPress={() => setVisibleCategoryMenu(true)}
+							style={styles.categoryButton}
+						>
+							{form.category
+								? recCategory.find((cat) => cat._id === form.category)?.name
+								: "Select Category"}
+						</Button>
+					}
+				>
+					{recCategory.map((cat) => (
+						<Menu.Item
+							key={cat._id}
+							title={cat.name}
+							onPress={() => {
+								setForm((prevForm) => ({ ...prevForm, category: cat._id }));
+								setVisibleCategoryMenu(false);
+							}}
+						/>
+					))}
+				</Menu>
+        <Text style={styles.titles}>Ingredient</Text>
+				<Menu
+					visible={visibleIngredientMenu}
+					onDismiss={() => setVisibleIngredientMenu(false)}
+					anchor={
+						<Button
+							mode="contained"
+							textColor="white"
+							buttonColor="grey"
+							onPress={() => setVisibleIngredientMenu(true)}
+							style={styles.ingredientButton}
+						>
+							{selectedIngredient
+								? ingredientList.find(
+										(ingredient) => ingredient._id === selectedIngredient
+								  )?.name
+								: "Select Ingredient"}
+						</Button>
+					}
+				>
+					{filteredIngredientList.map((ingredient) => (
+						<Menu.Item
+							key={ingredient._id}
+							title={ingredient.name}
+							onPress={() => {
+								setSelectedIngredient(ingredient._id);
+								setVisibleIngredientMenu(false);
+							}}
+						/>
+					))}
+				</Menu>
 
-        <Text>Quantity</Text>
-        <TextInput
-            style={styles.input}
-            keyboardType="numeric"
-            placeholder="quantity"
-            value={quantity.toString()}
-            onChangeText={(value) => {
-                const parsedValue = Number(value);
-                // resetting the value if its not a valid number
-                if (isNaN(parsedValue)) {
-                    setQuantity(0);
-                } else {
-                    setQuantity(parsedValue);
-                }
-            }}
-        />
-        
-        <Button title="Add Ingredient" onPress={handleAddIngredient} />
+				<Text style={styles.titles}>Ingredient Quantity:</Text>
+				<TextInput
+					style={styles.input}
+					keyboardType="numeric"
+					placeholder="quantity"
+					value={quantity.toString()}
+					onChangeText={(value) => {
+						const parsedValue = Number(value);
+						if (isNaN(parsedValue)) {
+							setQuantity(0);
+						} else {
+							setQuantity(parsedValue);
+						}
+					}}
+				/>
+        {/* {selectedIngredient && currentIngredient && (
+                  <Text>
+                    Selected Ingredient Quantity Unit: {currentIngredient.unit_id?.name}
+                  </Text>
+                )} */}
+        <Button
+                  buttonColor="grey"
+                  textColor="white"
+                  style={styles.btn}
+                  onPress={handleAddIngredient}
+                >
+                  Add Ingredient
+                </Button>
         {/* shows the previous image until a new image is selected */}
-        <Text>Recipe Image</Text>
-         {!image && oldRecipe.image_path && (
-                <Image
-                  source={{ uri: imageUrl }}
-                  style={styles.image}
-                  resizeMode="cover"
-                />
-              )}
-         <Button title="New Recipe Image" onPress={handlePickImage} />
-              {image && (
-                <Image
-                  source={{ uri: image }}
-                  style={styles.image}
-                  resizeMode="cover"
-                />
-              )}
-        <Text>Added Ingredients:</Text>
+        
+         
+              <View >
+        <Text style={styles.ingreients}>Added Ingredients:</Text>
         {/* need to figure out how to show these. Maybe a filter ?? */}
         {/* used flat list to show the ingredients already selected */}
         {form.ingredients.length > 0 && (
@@ -292,41 +330,89 @@ export default function Page() {
                  return (
                   // displaying the chosen ingredients
                   <View>
-                     <Text>
+                     <Text style={styles.ingreients}>
                          {ingredient ? ingredient.name : 'Unknown Ingredient'} - Quantity: {item.quantity}
                      </Text>
                      <Button
-                     title="Remove"
-                     color="#FF0000"
-                     onPress={() => handleRemoveIngredient(index)}
-                   />
+									 buttonColor="red"
+									 textColor="white"
+									 onPress={() => handleRemoveIngredient(index)}
+								   >
+									   Remove
+								   </Button>
                    </View>
                  );
             }}
             />
             
         )}
+        </View>
+        <Text style={styles.titles}>Current Recipe Image</Text>
+         {!image && oldRecipe.image_path && (
+                <Image
+                  source={{ uri: imageUrl }}
+                  style={styles.image}
+                  resizeMode="cover"
+                />
+              )}
+        <Button mode="contained" onPress={handlePickImage} buttonColor="blue">
+					Pick an image
+				</Button>
+
+				{image && (
+					<Image
+						source={{ uri: image }}
+						style={{ width: 50, height: 50, margin: 10 }}
+					/>
+				)}
         <Text>{error}</Text>
 
-        <Button 
-            onPress={handleSubmit}
-            title="Submit"
-            color="#841584"
-        />
+        <Button onPress={handleSubmit} mode="contained" buttonColor="green">
+					Submit
+				</Button>
     </View>
+    </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
-  input: {
-    height: 40,
-    margin: 10,
-    borderWidth: 1,
-    padding: 10,
+  container: {
+		flexGrow: 1,
+		padding: 10,
+		marginBottom: 50,
+	},
+	input: {
+		height: 40,
+		margin: 10,
+		borderWidth: 1,
+		padding: 10,
+	},
+	titles:{
+		fontWeight: "bold",
+	},
+	btn: {
+		margin: 10,
+	},
+	categoryButton: {
+		height: 60,
+		justifyContent: "center",
+	},
+	inputs:{
+		margin:50
+	  },
+	ingredientButton: {
+		height: 60,
+		justifyContent: "center",
+	},
+	ingreients: {
+		marginVertical: 2,
+		fontWeight: "bold",
+		fontSize: 12
   },
   image: {
-    width: 50,
-    height: 50,
+    width: 200,
+    height: 200,
     margin: 10,
   },
 });
+

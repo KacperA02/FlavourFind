@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
 	container: {
 		// Stacks image and text on smaller screens
 		flexDirection: "column",
-		margin: 16,
+		margin: 16
 	},
 	containerLarge: {
 		// Stacks images reversed on larger screens

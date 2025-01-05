@@ -9,7 +9,7 @@ export default function AdminIndex() {
 	if (!session || !isAdmin) {
 		return <LoginForm />;
 	}
-
+// This page shows all the different routes for admins
 	return (
 		<View style={styles.container}>
 			<Text style={styles.title}>Welcome to the Admin Dashboard</Text>
