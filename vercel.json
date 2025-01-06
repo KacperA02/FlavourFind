@@ -5,6 +5,6 @@
         "use": "@vercel/static-build"
       }
     ],
-    "outputDirectory": "web-build"
+    "outputDirectory": "build"
   }
   
