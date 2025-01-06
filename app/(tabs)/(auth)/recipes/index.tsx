@@ -3,15 +3,16 @@ import { FlatList } from "react-native";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "expo-router";
-
+import { useRouter } from "expo-router";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { Button, Snackbar,Text } from "react-native-paper";
+import { Button, Snackbar, Text } from "react-native-paper";
 import RecipeItem from "@/components/recipes/RecipeItem";
 import { RecipeTypeID } from "@/types";
 import { useLocalSearchParams } from "expo-router";
 export default function Tab() {
 	// const devUrl = process.env.EXPO_PUBLIC_DEV_URL;
 	const [recipes, setRecipes] = useState([]);
+	const router = useRouter()
 	// using snack bar to display any error messages
 	const [snackBarVisible, setSnackBarVisible] = useState(false);
 	const [snackBarMessage, setSnackBarMessage] = useState("");
@@ -40,21 +41,16 @@ export default function Tab() {
 	return (
 		<SafeAreaProvider>
 			<SafeAreaView style={styles.container}>
-			
 				{/* Button to create new recipes */}
-				<Link href={{ pathname: "/recipes/create" }}>
-					<Button
-						mode="contained"
-						onPress={() =>
-							setSnackBarMessage("oops.. Check if your logged in!")
-						}
-					>
-						Create Your Own Recipe
-					</Button>
-				</Link>
-				
+				<Button
+					mode="contained"
+					onPress={() => router.push(`/recipes/create`)}
+				>
+					Create A Recipe
+				</Button>
+
 				<ScrollView>
-				{/* Recipe List */}
+					{/* Recipe List */}
 					<FlatList
 						data={recipes}
 						renderItem={({ item }) => <RecipeItem recipe={item} />}
